@@ -133,3 +133,8 @@ Details on esp32 project structure
   - idf.py -p /dev/tty.wchusbserial<SN> monitor
   - or just idf.py monitor
   - <ctrl> + ] to end monitor
+
+Note that the entire framework is built for any project, even if the modules are not part of the project.
+Only the modules/methods that are used are actually linked into the final binary. This ensures everything 
+successfully builds even if it's not used. That unfortunately makes it harder to locally override certain 
+files in a project. This smallest unit of code that can be overridden is an entire component directory.

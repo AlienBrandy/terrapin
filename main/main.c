@@ -1,23 +1,31 @@
 #include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "esp_log.h"
-#include "cli.h"
+#include "console.h"
+#include "filesystem.h"
 
 void app_main(void)
 {
-    DL_ERROR_T dl_err;
-    dl_err = cli_init();
-    if (dl_err != DL_ERROR_NONE)
+    // initialize flash filesystem
+    FILESYSTEM_ERR_T err = filesystem_init();
+    if (err != FILESYSTEM_ERR_NONE)
     {
-        ESP_LOGE("datalogger", "cli_init() failed");        
+        ESP_LOGE(PROJECT_NAME, "filesystem_init() failed");        
         return;
     }
 
-    dl_err = cli_start();
-    if (dl_err != DL_ERROR_NONE)
+    // initialize debug console
+    CONSOLE_ERR_T console_err = console_init();
+    if (console_err != CONSOLE_ERR_NONE)
     {
-        ESP_LOGE("datalogger", "cli_start() failed");        
+        ESP_LOGE(PROJECT_NAME, "console_init() failed");        
+        return;
+    }
+
+    // start debug console thread
+    console_err = console_start();
+    if (console_err != CONSOLE_ERR_NONE)
+    {
+        ESP_LOGE(PROJECT_NAME, "console_start() failed");        
         return;
     }
 

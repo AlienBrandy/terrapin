@@ -1,0 +1,6 @@
+build/
+.devcontainer/
+output.txt
+.DS_Store
+.vscode/
+
