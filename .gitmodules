@@ -1,3 +1,0 @@
-[submodule "components/console/linenoise"]
-	path = components/console/linenoise
-	url = git@github.com:AlienBrandy/linenoise.git

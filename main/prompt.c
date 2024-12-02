@@ -2,7 +2,7 @@
 #include <string.h>
 #include "prompt.h"
 #include "esp_log.h"
-#include "linenoise/linenoise.h"
+#include "linenoise_lite.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "filesystem.h"
@@ -19,14 +19,13 @@
  */
 static void prompt_task(void* args)
 {
-    const char* prompt = LOG_COLOR_I PROJECT_NAME "> " LOG_RESET_COLOR;
-    const int prompt_bytes = strlen(prompt);
-    const int prompt_width = prompt_bytes - (strlen(LOG_COLOR_I) + strlen(LOG_RESET_COLOR));
+    const char* prompt = PROJECT_NAME "> ";
 
     while (true)
     {
         struct linenoiseState ls;
-        static char buf[1024];
+        static char buf[LINENOISE_MAX_LINE];    // contains input characters
+        static char abuf[LINENOISE_MAX_LINE];   // scratch pad for assembling terminal command string
 
         // refresh terminal size
         int rows, cols;
@@ -34,7 +33,7 @@ static void prompt_task(void* args)
         console_windows_get_size(&rows, &cols);
 
         // display prompt
-        linenoiseEditStart(&ls,-1,-1,buf,sizeof(buf),prompt,prompt_width, cols);
+        linenoiseEditStart(&ls, buf, sizeof(buf), abuf, sizeof(abuf), prompt, cols);
 
         // loop until we receive a full line from user
         char* line; 
@@ -81,19 +80,12 @@ static void prompt_task(void* args)
         // Process command
         menu_command_t command;
         strncpy(command.command_string, line, MENU_COMMAND_MAX_BYTES);
-        free(line);
         menu_send_command(&command);
     }
 }
 
 PROMPT_ERR_T prompt_init()
 {
-    // Disable multiline editing; long commands will scroll within a single line.
-    linenoiseSetMultiLine(0);
-
-    // Set command history size
-    linenoiseHistorySetMaxLen(100);
-
     // Load command history from filesystem
     linenoiseHistoryLoad(HISTORY_PATH);
 
