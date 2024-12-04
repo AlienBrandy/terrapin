@@ -2,6 +2,7 @@
 
 typedef enum {
     PROMPT_ERR_NONE,
+    PROMPT_ERR_INIT_FAIL,
     PROMPT_ERR_TASK_START_FAIL,
 } PROMPT_ERR_T;
 

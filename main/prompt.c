@@ -9,31 +9,23 @@
 #include "console_windows.h"
 #include "menu.h"
 
-/**
- * @brief path to non-volatile storage of cli history buffer
- */
-#define HISTORY_PATH FILESYSTEM_MOUNT_PATH "/history.txt"
+static struct linenoiseState ls;
 
 /**
  * 
  */
 static void prompt_task(void* args)
 {
-    const char* prompt = PROJECT_NAME "> ";
-
     while (true)
     {
-        struct linenoiseState ls;
-        static char buf[LINENOISE_MAX_LINE];    // contains input characters
-        static char abuf[LINENOISE_MAX_LINE];   // scratch pad for assembling terminal command string
-
         // refresh terminal size
         int rows, cols;
         console_windows_update_size();
         console_windows_get_size(&rows, &cols);
 
         // display prompt
-        linenoiseEditStart(&ls, buf, sizeof(buf), abuf, sizeof(abuf), prompt, cols);
+        const char* prompt = PROJECT_NAME "> ";
+        linenoiseEditStart(&ls, prompt, cols);
 
         // loop until we receive a full line from user
         char* line; 
@@ -69,13 +61,6 @@ static void prompt_task(void* args)
 
         // line complete, reset editor
         linenoiseEditStop(&ls);
-
-        // Add the command to the history if not empty
-        if (strlen(line) > 0)
-        {
-            linenoiseHistoryAdd(line);
-            linenoiseHistorySave(HISTORY_PATH);
-        }
  
         // Process command
         menu_command_t command;
@@ -86,11 +71,13 @@ static void prompt_task(void* args)
 
 PROMPT_ERR_T prompt_init()
 {
-    // Load command history from filesystem
-    linenoiseHistoryLoad(HISTORY_PATH);
+    // initialize line editing module
+    if (linenoiseInit(&ls, 256) != 0)
+    {
+        return PROMPT_ERR_INIT_FAIL;
+    }
 
     ESP_LOGI(PROJECT_NAME, "Prompt initialized");
-
     return PROMPT_ERR_NONE;
 }
 

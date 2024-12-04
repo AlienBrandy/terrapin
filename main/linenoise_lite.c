@@ -74,12 +74,22 @@
 #include <unistd.h>
 #include "linenoise_lite.h"
 #include "console_windows.h"
+#include "ring_buffer.h"
 
 #define REFRESH_CLEAN   (1<<0) // RefreshSingleLine flag: Clean the old prompt from the screen
 #define REFRESH_WRITE   (1<<1) // RefreshSingleLine flag: Rewrite the prompt on the screen.
 #define REFRESH_ALL     (REFRESH_CLEAN | REFRESH_WRITE) // Do both.
 
+#define PROMPT_COLOR       "\x1b[0;32m"   // ESC sequence to set the prompt color
+#define PROMPT_COLOR_RESET "\x1b[0m"      // ESC sequence to reset the color
+
 static void linenoiseAtExit(void);
+static int  initHistory(void);
+static int  addToHistory(const char *line);
+static void freeHistory(void);
+static void prevFromHistory(struct linenoiseState *l);
+static void nextFromHistory(struct linenoiseState *l);
+
 static void refreshLineWithFlags(struct linenoiseState *l, int flags);
 static void refreshSingleLine(struct linenoiseState *l, int flags);
 static void refreshLine(struct linenoiseState *l);
@@ -88,30 +98,29 @@ static struct termios orig_termios; /* In order to restore at exit.*/
 static int maskmode = 0; /* Show "***" instead of input. For passwords. */
 static int rawmode = 0; /* For atexit() function to check if restore is needed*/
 static int atexit_registered = 0; /* Register atexit just 1 time. */
-static int history_max_len = LINENOISE_DEFAULT_HISTORY_MAX_LEN;
-static int history_len = 0;
-static char **history = NULL;
+
+static ring_buffer_handle_t history_buffer = NULL;
 
 enum KEY_ACTION {
-	KEY_NULL = 0,	    /* NULL */
-	CTRL_A = 1,         /* Ctrl+a */
-	CTRL_B = 2,         /* Ctrl-b */
-	CTRL_C = 3,         /* Ctrl-c */
-	CTRL_D = 4,         /* Ctrl-d */
-	CTRL_E = 5,         /* Ctrl-e */
-	CTRL_F = 6,         /* Ctrl-f */
-	CTRL_H = 8,         /* Ctrl-h */
-	TAB = 9,            /* Tab */
-	CTRL_K = 11,        /* Ctrl+k */
-	CTRL_L = 12,        /* Ctrl+l */
-	ENTER = 13,         /* Enter */
-	CTRL_N = 14,        /* Ctrl-n */
-	CTRL_P = 16,        /* Ctrl-p */
-	CTRL_T = 20,        /* Ctrl-t */
-	CTRL_U = 21,        /* Ctrl+u */
-	CTRL_W = 23,        /* Ctrl+w */
-	ESC = 27,           /* Escape */
-	BACKSPACE =  127    /* Backspace */
+	KEY_NULL  = 0,	    /* NULL */
+	CTRL_A    = 1,      /* Ctrl+a */
+	CTRL_B    = 2,      /* Ctrl-b */
+	CTRL_C    = 3,      /* Ctrl-c */
+	CTRL_D    = 4,      /* Ctrl-d */
+	CTRL_E    = 5,      /* Ctrl-e */
+	CTRL_F    = 6,      /* Ctrl-f */
+	CTRL_H    = 8,      /* Ctrl-h */
+	TAB       = 9,      /* Tab */
+	CTRL_K    = 11,     /* Ctrl+k */
+	CTRL_L    = 12,     /* Ctrl+l */
+	ENTER     = 13,     /* Enter */
+	CTRL_N    = 14,     /* Ctrl-n */
+	CTRL_P    = 16,     /* Ctrl-p */
+	CTRL_T    = 20,     /* Ctrl-t */
+	CTRL_U    = 21,     /* Ctrl+u */
+	CTRL_W    = 23,     /* Ctrl+w */
+	ESC       = 27,     /* Escape */
+	BACKSPACE = 127     /* Backspace */
 };
 
 /* ======================= Low level terminal handling ====================== */
@@ -190,8 +199,7 @@ static void refreshSingleLine(struct linenoiseState *l, int flags)
     size_t pos = l->pos;
     int written = 0;
 
-    // skip the beginning of prompt/string if display isn't wide enough
-    // to show the entire thing.
+    // skip characters if display isn't wide enough to show the entire thing.
     while((plen + pos) >= l->cols) {
         buf++;
         len--;
@@ -209,7 +217,7 @@ static void refreshSingleLine(struct linenoiseState *l, int flags)
 
     if (flags & REFRESH_WRITE) {
         // Add the prompt
-        written += snprintf(l->abuf + written, l->abuflen - written, "\033[0;32m" "%s" "\033[0m", l->prompt);
+        written += snprintf(l->abuf + written, l->abuflen - written, PROMPT_COLOR "%s" PROMPT_COLOR_RESET, l->prompt);
 
         // Add the current buffer content
         if (maskmode == 1)
@@ -334,33 +342,6 @@ void linenoiseEditMoveEnd(struct linenoiseState *l)
     }
 }
 
-/* Substitute the currently edited line with the next or previous history
- * entry as specified by 'dir'. */
-#define LINENOISE_HISTORY_NEXT 0
-#define LINENOISE_HISTORY_PREV 1
-void linenoiseEditHistoryNext(struct linenoiseState *l, int dir)
-{
-    if (history_len > 1) {
-        /* Update the current history entry before to
-         * overwrite it with the next one. */
-        free(history[history_len - 1 - l->history_index]);
-        history[history_len - 1 - l->history_index] = strdup(l->buf);
-        /* Show the new entry */
-        l->history_index += (dir == LINENOISE_HISTORY_PREV) ? 1 : -1;
-        if (l->history_index < 0) {
-            l->history_index = 0;
-            return;
-        } else if (l->history_index >= history_len) {
-            l->history_index = history_len-1;
-            return;
-        }
-        strncpy(l->buf,history[history_len - 1 - l->history_index],l->buflen);
-        l->buf[l->buflen-1] = '\0';
-        l->len = l->pos = strlen(l->buf);
-        refreshLine(l);
-    }
-}
-
 /* Delete the character at the right of the cursor without altering the cursor
  * position. Basically this is what happens with the "Delete" keyboard key. */
 void linenoiseEditDelete(struct linenoiseState *l)
@@ -402,6 +383,36 @@ void linenoiseEditDeletePrevWord(struct linenoiseState *l)
     refreshLine(l);
 }
 
+int linenoiseInit(struct linenoiseState *l, size_t max_line_chars)
+{
+    // Create line buffer for input characters
+    l->buf = calloc(1, max_line_chars);
+    if (l->buf == NULL)
+    {
+        return 1;
+    }
+
+    // Create scratchpad for assembling terminal command string
+    l->abuf = calloc(1, max_line_chars * 2);
+    if (l->abuf == NULL)
+    {
+        free(l->buf);
+        return 1;
+    }
+
+    // Initialize history buffer
+    if (initHistory() != 0)
+    {
+        free(l->buf);
+        free(l->abuf);
+        return 1;
+    }
+
+    l->buflen = max_line_chars;
+    l->abuflen = max_line_chars * 2;
+    return 0;
+}
+
 /* This function is part of the multiplexed API of Linenoise, that is used
  * in order to implement the blocking variant of the API but can also be
  * called by the user directly in an event driven program. It will:
@@ -426,26 +437,20 @@ void linenoiseEditDeletePrevWord(struct linenoiseState *l)
  * fails. If stdin_fd or stdout_fd are set to -1, the default is to use
  * STDIN_FILENO and STDOUT_FILENO.
  */
-int linenoiseEditStart(struct linenoiseState *l, char *buf, size_t buflen, char *abuf, size_t abuflen, const char *prompt, size_t max_cols)
+int linenoiseEditStart(struct linenoiseState *l, const char *prompt, size_t max_cols)
 {
     /* Populate the linenoise state that we pass to functions implementing
      * specific editing functionalities. */
     l->ifd = STDIN_FILENO;
-    l->buf = buf;
-    l->buflen = buflen;
-    l->abuf = abuf;
-    l->abuflen = abuflen;
     l->prompt = prompt;
     l->plen = strlen(prompt);
-    l->oldpos = l->pos = 0;
+    l->oldpos = 0;
+    l->pos = 0;
     l->len = 0;
+    l->cols = max_cols;
 
     /* Enter raw mode. */
     if (enableRawMode(l->ifd) == -1) return -1;
-
-    l->cols = max_cols;
-    l->oldrows = 0;
-    l->history_index = 0;
 
     /* Buffer starts empty. */
     l->buf[0] = '\0';
@@ -456,11 +461,7 @@ int linenoiseEditStart(struct linenoiseState *l, char *buf, size_t buflen, char 
      * mode later, in linenoiseEditFeed(). */
     if (!isatty(l->ifd)) return 0;
 
-    /* The latest history entry is always our current buffer, that
-     * initially is just an empty string. */
-    linenoiseHistoryAdd("");
-
-    console_windows_printf(CONSOLE_WINDOW_1, "\033[0;32m" "%s" "\033[0m", prompt);
+    console_windows_printf(CONSOLE_WINDOW_1, PROMPT_COLOR "%s" PROMPT_COLOR_RESET, prompt);
     return 0;
 }
 
@@ -499,8 +500,6 @@ char *linenoiseEditFeed(struct linenoiseState *l)
     switch(c)
     {
     case ENTER:    /* enter */
-        history_len--;
-        free(history[history_len]);
         return l->buf;
     case CTRL_C:     /* ctrl-c */
         errno = EAGAIN;
@@ -514,8 +513,6 @@ char *linenoiseEditFeed(struct linenoiseState *l)
         if (l->len > 0) {
             linenoiseEditDelete(l);
         } else {
-            history_len--;
-            free(history[history_len]);
             errno = ENOENT;
             return NULL;
         }
@@ -536,10 +533,10 @@ char *linenoiseEditFeed(struct linenoiseState *l)
         linenoiseEditMoveRight(l);
         break;
     case CTRL_P:    /* ctrl-p */
-        linenoiseEditHistoryNext(l, LINENOISE_HISTORY_PREV);
+        prevFromHistory(l);
         break;
     case CTRL_N:    /* ctrl-n */
-        linenoiseEditHistoryNext(l, LINENOISE_HISTORY_NEXT);
+        nextFromHistory(l);
         break;
     case ESC:    /* escape sequence */
         /* Read the next two bytes representing the escape sequence.
@@ -563,10 +560,10 @@ char *linenoiseEditFeed(struct linenoiseState *l)
             } else {
                 switch(seq[1]) {
                 case 'A': /* Up */
-                    linenoiseEditHistoryNext(l, LINENOISE_HISTORY_PREV);
+                    prevFromHistory(l);
                     break;
                 case 'B': /* Down */
-                    linenoiseEditHistoryNext(l, LINENOISE_HISTORY_NEXT);
+                    nextFromHistory(l);
                     break;
                 case 'C': /* Right */
                     linenoiseEditMoveRight(l);
@@ -632,23 +629,15 @@ char *linenoiseEditFeed(struct linenoiseState *l)
  * is in the buffer, and we can restore the terminal in normal mode. */
 void linenoiseEditStop(struct linenoiseState *l)
 {
+    // store line in history if not blank
+    if (strlen(l->buf) > 0)
+    {
+        addToHistory(l->buf);
+    }
+
     if (!isatty(l->ifd)) return;
     disableRawMode(l->ifd);
     console_windows_printf(CONSOLE_WINDOW_1, "\n");
-}
-
-/* ================================ History ================================= */
-
-/* Free the history, but does not reset it. Only used when we have to
- * exit() to avoid memory leaks are reported by valgrind & co. */
-static void freeHistory(void)
-{
-    if (history)
-    {
-        for (int j = 0; j < history_len; j++)
-            free(history[j]);
-        free(history);
-    }
 }
 
 /* At exit we'll try to fix the terminal to the initial conditions. */
@@ -658,82 +647,106 @@ static void linenoiseAtExit(void)
     freeHistory();
 }
 
-/* This is the API call to add a new entry in the linenoise history.
- * It uses a fixed array of char pointers that are shifted (memmoved)
- * when the history max length is reached in order to remove the older
- * entry and make room for the new one, so it is not exactly suitable for huge
- * histories, but will work well for a few hundred of entries.
- *
- * Using a circular buffer is smarter, but a bit more complex to handle. */
-int linenoiseHistoryAdd(const char *line)
+/* ================================ History ================================= */
+
+/**
+ * @brief Init the history buffer.
+ * 
+ * call before attempting to add/retrieve lines from history buffer 
+ */
+static int initHistory(void)
 {
-    char *linecopy;
-
-    if (history_max_len == 0) return 0;
-
-    /* Initialization on first call. */
-    if (history == NULL)
+    if (history_buffer == NULL)
     {
-        history = malloc(sizeof(char*)*history_max_len);
-        if (history == NULL) return 0;
-        memset(history,0,(sizeof(char*)*history_max_len));
+        // create buffer for approximately 50 entries
+        if (ring_buffer_create(&history_buffer, 2048) != RING_BUFFER_ERR_NONE)
+        {
+            return 1;
+        }
+
+        // add a blank line to history buffer as a hint to the user
+        // for where the list wraps.
+        addToHistory("");
     }
 
-    /* Don't add duplicated lines. */
-    if (history_len && !strcmp(history[history_len-1], line)) return 0;
+    return 0;
+}
 
-    /* Add an heap allocated copy of the line in the history.
-     * If we reached the max length, remove the older line. */
-    linecopy = strdup(line);
-    if (!linecopy) return 0;
-    if (history_len == history_max_len)
+/**
+ * @brief Free the history buffer.
+ * 
+ * used when we have to exit() to avoid memory leaks are reported by valgrind & co.
+ */
+static void freeHistory(void)
+{
+    ring_buffer_destroy(history_buffer);
+}
+
+/**
+ * @brief Overwrite line buffer with previous entry from history.
+ * 
+ */
+static void prevFromHistory(struct linenoiseState *l)
+{
+    char* line_from_history = "";
+
+    if (ring_buffer_peek_prev(history_buffer, (uint8_t**)&line_from_history, NULL) != RING_BUFFER_ERR_NONE)
     {
-        free(history[0]);
-        memmove(history,history+1,sizeof(char*)*(history_max_len-1));
-        history_len--;
+        return;
     }
-    history[history_len] = linecopy;
-    history_len++;
+    strncpy(l->buf, (char*)line_from_history, l->buflen);
+    l->buf[l->buflen - 1] = '\0';
+    l->len = l->pos = strlen(l->buf);
+    refreshLine(l);
+}
+
+/**
+ * @brief Overwrite line buffer with next entry from history.
+ * 
+ */
+static void nextFromHistory(struct linenoiseState *l)
+{
+    char* line_from_history = "";
+
+    if (ring_buffer_peek_next(history_buffer, (uint8_t**)&line_from_history, NULL) != RING_BUFFER_ERR_NONE)
+    {
+        return;
+    }
+    strncpy(l->buf, (char*)line_from_history, l->buflen);
+    l->buf[l->buflen - 1] = '\0';
+    l->len = l->pos = strlen(l->buf);
+    refreshLine(l);
+}
+
+/**
+ * @brief Add a new entry in the history buffer.
+ * 
+ */
+static int addToHistory(const char *line)
+{
+    // check if previous entry is identical to skip duplicates
+    char* last_line = "";
+    RING_BUFFER_ERR_T retc = ring_buffer_peek_tail(history_buffer, (uint8_t**)&last_line, NULL);
+    if (retc == RING_BUFFER_ERR_EMPTY)
+    {
+        // add line (including null terminator) to history
+        ring_buffer_add(history_buffer, (uint8_t*)line, strlen(line) + 1);
+        return 0;
+    }
+    if (retc == RING_BUFFER_ERR_NONE)
+    {
+        if (strcmp(line, last_line) != 0)
+        {
+            // add line (including null terminator) to history
+            ring_buffer_add(history_buffer, (uint8_t*)line, strlen(line) + 1);
+        }
+
+        // reset read pointer to head element
+        ring_buffer_peek_head(history_buffer, NULL, NULL);
+        return 0;
+    }
+
+    // error accessing ring buffer
     return 1;
 }
 
-/* Save the history in the specified file. On success 0 is returned
- * otherwise -1 is returned. */
-int linenoiseHistorySave(const char *filename)
-{
-    FILE *fp;
-    int j;
-
-    fp = fopen(filename,"w");
-    if (fp == NULL) return -1;
-
-    for (j = 0; j < history_len; j++)
-        fprintf(fp,"%s\n",history[j]);
-    fclose(fp);
-    return 0;
-}
-
-/* Load the history from the specified file. If the file does not exist
- * zero is returned and no operation is performed.
- *
- * If the file exists and the operation succeeded 0 is returned, otherwise
- * on error -1 is returned. */
-int linenoiseHistoryLoad(const char *filename)
-{
-    FILE *fp = fopen(filename,"r");
-    static char buf[LINENOISE_MAX_LINE];
-
-    if (fp == NULL) return -1;
-
-    while (fgets(buf,LINENOISE_MAX_LINE,fp) != NULL)
-    {
-        char *p;
-
-        p = strchr(buf,'\r');
-        if (!p) p = strchr(buf,'\n');
-        if (p) *p = '\0';
-        linenoiseHistoryAdd(buf);
-    }
-    fclose(fp);
-    return 0;
-}

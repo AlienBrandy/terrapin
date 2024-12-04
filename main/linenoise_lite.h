@@ -2,13 +2,20 @@
  * linenoise_lite.h
  * 
  * Line editing module based on open-source linenoise project.
- * This fork has been modified to remove memory allocs/frees to make it
- * more suitable for an embedded application. Some functionality has been
- * removed to reduce the footprint and simplify the API. Notably, the
- * line completion and multiline features have been removed.
+ * This fork has been modified to remove periodic memory allocs and frees
+ * to make it more suitable for embedded applications. Some functionality
+ * has been removed to reduce the footprint and simplify the API. Notably
+ * the line completion and multiline features have been removed. 
+ * The history feature now leverages a statically allocated ring buffer,
+ * but it no longer saves/restores history from non-volatile storage.
+ * A new init() function performs upfront allocation of the history and 
+ * line buffers.
  * 
  * This version inherits and is subject to the same license policy
- * applicable to the original linenoise library as described below.
+ * of the original linenoise library as described below.
+ * 
+ * Copyright (c) 2024, Honulanding Software
+ *   <alienbrandy at honulanding dot com>
  *
  * ------------------------------------------------------------------------
  * 
@@ -60,16 +67,6 @@ extern "C" {
 #include <stddef.h> /* For size_t. */
 
 /**
- * @brief
- */
-#define LINENOISE_DEFAULT_HISTORY_MAX_LEN 20
-
-/**
- * @brief
- */
-#define LINENOISE_MAX_LINE 256
-
-/**
  * returned by linenoiseEditFeed when the line isn't yet complete.
  * 
  */
@@ -90,21 +87,15 @@ struct linenoiseState {
     size_t oldpos;      /* Previous refresh cursor position. */
     size_t len;         /* Current edited line length. */
     size_t cols;        /* Number of columns in terminal. */
-    size_t oldrows;     /* Rows used by last refrehsed line (multiline mode) */
-    int history_index;  /* The history index we are currently editing. */
 };
 
 /* Non blocking API. */
-int linenoiseEditStart(struct linenoiseState *l, char *buf, size_t buflen, char *abuf, size_t abuflen, const char *prompt, size_t max_cols);
+int linenoiseInit(struct linenoiseState *l, size_t max_line_chars);
+int linenoiseEditStart(struct linenoiseState *l, const char *prompt, size_t max_cols);
 char *linenoiseEditFeed(struct linenoiseState *l);
 void linenoiseEditStop(struct linenoiseState *l);
 void linenoiseHide(struct linenoiseState *l);
 void linenoiseShow(struct linenoiseState *l);
-
-/* History API. */
-int linenoiseHistoryAdd(const char *line);
-int linenoiseHistorySave(const char *filename);
-int linenoiseHistoryLoad(const char *filename);
 
 /* Other utilities. */
 void linenoiseMaskModeEnable(void);
