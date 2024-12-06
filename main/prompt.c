@@ -63,9 +63,9 @@ static void prompt_task(void* args)
         linenoiseEditStop(&ls);
  
         // Process command
-        menu_command_t command;
-        strncpy(command.command_string, line, MENU_COMMAND_MAX_BYTES);
-        menu_send_command(&command);
+        static char command[MENU_COMMAND_MAX_BYTES];
+        strncpy(command, line, sizeof(command));
+        menu_send_command(command);
     }
 }
 

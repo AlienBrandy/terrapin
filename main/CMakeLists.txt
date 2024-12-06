@@ -1,4 +1,4 @@
-idf_component_register(SRCS "main.c" "prompt.c" "menu.c" "console.c" "filesystem.c" "console_windows.c" "ansi_term.c" "linenoise_lite.c" "ring_buffer.c"
+idf_component_register(SRCS "wifi.c" "main.c" "prompt.c" "menu.c" "main_menu.c" "wifi.c" "wifi_menu.c" "console.c" "filesystem.c" "console_windows.c" "ansi_term.c" "linenoise_lite.c" "ring_buffer.c"
                     INCLUDE_DIRS ".")
 
 message("CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME}")
