@@ -1,3 +1,10 @@
+/**
+ * ansi_term.c
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "ansi_term.h"
 #include <stdio.h>
 #include <stdarg.h>

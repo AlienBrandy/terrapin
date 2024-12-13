@@ -1,3 +1,10 @@
+/**
+ * prompt.c
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include "prompt.h"

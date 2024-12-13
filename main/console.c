@@ -1,3 +1,10 @@
+/**
+ * console.c
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include "console.h"
 #include "console_windows.h"
 #include "prompt.h"

@@ -2,20 +2,14 @@
  * linenoise_lite.h
  * 
  * Line editing module based on open-source linenoise project.
- * This fork has been modified to remove periodic memory allocs and frees
- * to make it more suitable for embedded applications. Some functionality
- * has been removed to reduce the footprint and simplify the API. Notably
- * the line completion and multiline features have been removed. 
- * The history feature now leverages a statically allocated ring buffer,
- * but it no longer saves/restores history from non-volatile storage.
- * A new init() function performs upfront allocation of the history and 
- * line buffers.
+ * This fork has been modified to remove periodic memory allocs and frees to make it
+ * more suitable for embedded applications. Some functionality has been removed
+ * to reduce the footprint and simplify the API. Notably the line completion and
+ * multiline features have been removed. The history feature now leverages a statically 
+ * allocated ring buffer, but it no longer saves/restores history from non-volatile storage.
+ * A new init() function performs upfront allocation of the history and line buffers.
  * 
- * This version inherits and is subject to the same license policy
- * of the original linenoise library as described below.
- * 
- * Copyright (c) 2024, Honulanding Software
- *   <alienbrandy at honulanding dot com>
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
  *
  * ------------------------------------------------------------------------
  * 

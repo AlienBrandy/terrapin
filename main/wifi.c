@@ -1,3 +1,10 @@
+/**
+ * wifi.c
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "wifi.h"
 #include "esp_log.h"
 

@@ -1,3 +1,10 @@
+/**
+ * ansi_term.h
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #pragma once
 #include <stdint.h>
 #include <stdbool.h>
@@ -67,3 +74,8 @@ void ansi_term_reset_attributes(void);
  * 
  */
 void ansi_term_hide_cursor(void);
+
+/**
+ * 
+ */
+void ansi_term_show_cursor(void);

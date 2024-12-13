@@ -1,12 +1,7 @@
-/* linenoise.c -- guerrilla line editing library against the idea that a
- * line editing lib needs to be 20,000 lines of C code.
+/** 
+ * linenoise_lite.c
  *
- * You can find the latest source code at:
- *
- *   http://github.com/antirez/linenoise
- *
- * Does a number of crazy assumptions that happen to be true in 99.9999% of
- * the 2010 UNIX computers around.
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
  *
  * ------------------------------------------------------------------------
  *
@@ -39,25 +34,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ------------------------------------------------------------------------
- * *
- * List of escape sequences used by this program, we do everything just
- * with three sequences. In order to be so cheap we may have some
- * flickering effect with some slow terminal, but the lesser sequences
- * the more compatible.
- *
- * EL (Erase Line)
- *    Sequence: ESC [ n K
- *    Effect: if n is 0 or missing, clear from cursor to end of line
- *    Effect: if n is 1, clear from beginning of line to cursor
- *    Effect: if n is 2, clear entire line
- *
- * CUF (CUrsor Forward)
- *    Sequence: ESC [ n C
- *    Effect: moves cursor forward n chars
- *
- * CUB (CUrsor Backward)
- *    Sequence: ESC [ n D
- *    Effect: moves cursor backward n chars
  */
 
 #include <termios.h>
