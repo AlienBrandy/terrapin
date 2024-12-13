@@ -1,0 +1,13 @@
+/**
+ * wifi.def
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: MIT
+ */
+
+#define WIFI_ERROR_LIST \
+X(WIFI_ERR_NONE,                      "No Error")               \
+X(WIFI_ERR_CONNECTION_TIMEOUT,        "Connection timeout")     \
+X(WIFI_ERR_INIT_FAILED,               "Initializaton failed")   \
+X(WIFI_ERR_CONNECT_FAILED,            "Connect failed")         \
+X(WIFI_ERR_SCAN_FAILED,               "Scan failed")

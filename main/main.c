@@ -9,6 +9,7 @@
 #include "esp_log.h"
 #include "console.h"
 #include "filesystem.h"
+#include "wifi.h"
 
 void app_main(void)
 {
@@ -33,6 +34,14 @@ void app_main(void)
     if (console_err != CONSOLE_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "console_start() failed");        
+        return;
+    }
+
+    // start wifi module
+    WIFI_ERR_T wifi_err = wifi_init();
+    if (wifi_err != WIFI_ERR_NONE)
+    {
+        ESP_LOGE(PROJECT_NAME, "wifi_init() failed");
         return;
     }
 

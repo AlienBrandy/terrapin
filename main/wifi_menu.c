@@ -51,6 +51,14 @@ menu_item_t* wifi_menu(int argc, char* argv[])
     return NULL;
 }
 
+static menu_item_t* scan(int argc, char* argv[])
+{
+    console_windows_printf(CONSOLE_WINDOW_2, "scanning...\n");
+    WIFI_ERR_T code = wifi_scan();
+    console_windows_printf(CONSOLE_WINDOW_2, "scan: %s\n", wifi_get_error_string(code));
+    return NULL;
+}
+
 static menu_item_t* connect(int argc, char* argv[])
 {
     if (argc < 3)
@@ -61,18 +69,19 @@ static menu_item_t* connect(int argc, char* argv[])
 
     char* ssid = argv[1];
     char* pwd  = argv[2];
+    uint32_t timeout_ms = 10000;
 
-    console_windows_printf(CONSOLE_WINDOW_2, "connecting... ");
-    WIFI_ERR_T retc = wifi_connect(ssid, pwd, 10);
-    console_windows_printf(CONSOLE_WINDOW_2, "%d.\n", retc);
+    console_windows_printf(CONSOLE_WINDOW_2, "connecting...\n");
+    WIFI_ERR_T code = wifi_connect(ssid, pwd, timeout_ms);
+    console_windows_printf(CONSOLE_WINDOW_2, "connect: %s\n", wifi_get_error_string(code));
     return NULL;
 }
 
 static menu_item_t* disconnect(int argc, char* argv[])
 {
-    console_windows_printf(CONSOLE_WINDOW_2, "disconnecting... ");
-    WIFI_ERR_T retc = wifi_disconnect();
-    console_windows_printf(CONSOLE_WINDOW_2, "%d.\n", retc);
+    console_windows_printf(CONSOLE_WINDOW_2, "disconnecting...\n");
+    WIFI_ERR_T code = wifi_disconnect();
+    console_windows_printf(CONSOLE_WINDOW_2, "disconnect: %s\n", wifi_get_error_string(code));
     return NULL;
 }
 
@@ -90,8 +99,14 @@ static menu_item_t menu_item_wifi = {
 
 static menu_item_t menu_item_exit = {
     .func = exit_wifi_menu,
-    .cmd  = "x",
-    .desc = "back to main menu"
+    .cmd  = "exit",
+    .desc = "exit wifi menu"
+};
+
+static menu_item_t menu_item_scan_for_networks = {
+    .func = scan,
+    .cmd  = "scan",
+    .desc = "scan for networks"
 };
 
 static menu_item_t menu_item_connect = {
@@ -109,6 +124,7 @@ static menu_item_t menu_item_disconnect = {
 menu_item_t* wifi_menu_init(void)
 {
     menu_register_item(&menu_item_exit, &item_list, &list_size);
+    menu_register_item(&menu_item_scan_for_networks, &item_list, &list_size);
     menu_register_item(&menu_item_connect, &item_list, &list_size);
     menu_register_item(&menu_item_disconnect, &item_list, &list_size);
 
