@@ -30,6 +30,16 @@ typedef enum {
     ANSI_ATTRIB_HIDDEN      = 8,
 } ANSI_TERM_ATTRIB_T;
 
+typedef enum {
+    ANSI_CURSOR_DEFAULT     = 0, // Default
+    ANSI_CURSOR_BBLOCK      = 1, // Block (blinking)
+    ANSI_CURSOR_BLOCK       = 2, //	Block (steady)
+    ANSI_CURSOR_BUNDERLINE  = 3, // Underline (blinking)
+    ANSI_CURSOR_UNDERLINE   = 4, // Underline (steady)
+    ANSI_CURSOR_BBAR        = 5, //	Bar (blinking)
+    ANSI_CURSOR_BAR         = 6, //	Bar (steady)
+} ANSI_TERM_CURSOR_STYLE_T;
+
 /**
  * 
  */
@@ -79,3 +89,8 @@ void ansi_term_hide_cursor(void);
  * 
  */
 void ansi_term_show_cursor(void);
+
+/**
+ * 
+ */
+void ansi_term_set_cursor_style(ANSI_TERM_CURSOR_STYLE_T style);

@@ -61,7 +61,7 @@ static void repaint_screen(void)
     // start by clearing the terminal window
     ansi_term_erase_screen();
 
-    // hide the cursor
+    // hide the cursor during redraw
     ansi_term_hide_cursor();
 
     // paint borders around windows
@@ -79,6 +79,10 @@ static void repaint_screen(void)
 
     // invalidate current window index to force refresh
     active_window = CONSOLE_WINDOW_MAX;
+
+    // show the cursor again
+    ansi_term_set_cursor_style(ANSI_CURSOR_BBAR);
+    ansi_term_show_cursor();
 }
 
 static void set_active_window(CONSOLE_WINDOW_T idx)

@@ -182,3 +182,10 @@ void ansi_term_show_cursor(void)
     static const char ANSI_ESC_SHOW_CURSOR[] = "\x1b[?25h";
     write(STDOUT_FILENO, ANSI_ESC_SHOW_CURSOR, sizeof(ANSI_ESC_SHOW_CURSOR));
 }
+
+void ansi_term_set_cursor_style(ANSI_TERM_CURSOR_STYLE_T style)
+{
+    char buf[20];
+    int nbytes = snprintf(buf, sizeof(buf), "\x1b[%d q", style);
+    write(STDOUT_FILENO, buf, nbytes);
+}

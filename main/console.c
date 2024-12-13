@@ -30,12 +30,11 @@ CONSOLE_ERR_T console_start(void)
 {
     console_windows_init();
 
-    // redirect log messages to desired window
+    // redirect esp log messages to desired window
     esp_log_set_vprintf(console_windows_logf);
 
     prompt_start();
     menu_start();
-
 
     return CONSOLE_ERR_NONE;
 }
