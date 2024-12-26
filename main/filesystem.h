@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <stdio.h>
+
 /**
  * @brief path to non-volatile filesystem for storing user data
  */

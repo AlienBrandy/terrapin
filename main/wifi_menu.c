@@ -17,7 +17,6 @@ static int list_size = 0;
 
 static void show_help(void)
 {
-    // first item by convention is the name of the menu and gets unique formatting
     console_windows_printf(CONSOLE_WINDOW_2, "\nwifi menu\n");
 
     for (int i = 0; i < list_size; i++)
@@ -55,6 +54,23 @@ static menu_item_t* scan(int argc, char* argv[])
 {
     console_windows_printf(CONSOLE_WINDOW_2, "scanning...\n");
     WIFI_ERR_T code = wifi_scan();
+    if (code == WIFI_ERR_NONE)
+    {
+        uint16_t num_networks = wifi_get_number_of_networks();
+        console_windows_printf(CONSOLE_WINDOW_2, "%d networks found.\n", num_networks);
+        if (num_networks > 0)
+        {
+            console_windows_printf(CONSOLE_WINDOW_2, "idx SSID                              dBm \n");
+            console_windows_printf(CONSOLE_WINDOW_2, "--- --------------------------------- ----\n");
+            for (uint16_t i = 0; i < num_networks; i++)
+            {
+                wifi_network_record_t network_record;
+                wifi_get_network_record(i, &network_record);
+                console_windows_printf(CONSOLE_WINDOW_2, "%03d %-32.32s %4d\n", i, network_record.ssid, network_record.rssi);
+            }
+        }
+    }
+
     console_windows_printf(CONSOLE_WINDOW_2, "scan: %s\n", wifi_get_error_string(code));
     return NULL;
 }

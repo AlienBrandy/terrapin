@@ -10,4 +10,5 @@ X(WIFI_ERR_NONE,                      "No Error")               \
 X(WIFI_ERR_CONNECTION_TIMEOUT,        "Connection timeout")     \
 X(WIFI_ERR_INIT_FAILED,               "Initializaton failed")   \
 X(WIFI_ERR_CONNECT_FAILED,            "Connect failed")         \
-X(WIFI_ERR_SCAN_FAILED,               "Scan failed")
+X(WIFI_ERR_SCAN_FAILED,               "Scan failed")            \
+X(WIFI_ERR_INVALID_RECORD_INDEX,      "Invalid record index")
