@@ -6,6 +6,7 @@
  */
 
 #include "wifi.h"
+#include "known_networks.h"
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
@@ -123,7 +124,15 @@ WIFI_ERR_T wifi_init(void)
     esp_err = esp_wifi_start();
     if (esp_err != ESP_OK)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "esp_wifi_start failed: %d\n", esp_err);
+        ESP_LOGW("wifi", "esp_wifi_start failed: %d\n", esp_err);
+        return WIFI_ERR_INIT_FAILED;
+    }
+
+    // initialize list of known networks
+    KNOWN_NETWORKS_ERR_T kn_err = known_networks_init();
+    if (kn_err != KNOWN_NETWORKS_ERR_NONE)
+    {
+        ESP_LOGW("wifi", "known_networks_init failed: %s\n", known_networks_get_error_string(kn_err));
         return WIFI_ERR_INIT_FAILED;
     }
 

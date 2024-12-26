@@ -11,6 +11,7 @@
 #include "main_menu.h"
 #include "console_windows.h"
 #include "wifi.h"
+#include "known_networks_menu.h"
 
 static menu_item_t* item_list = NULL;
 static int list_size = 0;
@@ -101,6 +102,12 @@ static menu_item_t* disconnect(int argc, char* argv[])
     return NULL;
 }
 
+static menu_item_t* show_known_networks_menu(int argc, char* argv[])
+{
+    // switch menus
+    return known_networks_menu(0, NULL);
+}
+
 static menu_item_t* exit_wifi_menu(int argc, char* argv[])
 {
     // switch menus
@@ -137,12 +144,21 @@ static menu_item_t menu_item_disconnect = {
     .desc = "disconnect from wifi"
 };
 
+static menu_item_t menu_item_known_networks = {
+    .func = show_known_networks_menu,
+    .cmd  = "nets",
+    .desc = "known networks submenu"
+};
+
 menu_item_t* wifi_menu_init(void)
 {
     menu_register_item(&menu_item_exit, &item_list, &list_size);
     menu_register_item(&menu_item_scan_for_networks, &item_list, &list_size);
     menu_register_item(&menu_item_connect, &item_list, &list_size);
     menu_register_item(&menu_item_disconnect, &item_list, &list_size);
+    menu_register_item(&menu_item_known_networks, &item_list, &list_size);
+
+    known_networks_menu_init();
 
     return &menu_item_wifi;
 }

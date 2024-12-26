@@ -1,0 +1,14 @@
+/**
+ * known_networks.def
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: MIT
+ */
+
+#define KNOWN_NETWORKS_ERROR_LIST \
+X(KNOWN_NETWORKS_ERR_NONE,                      "No Error")                     \
+X(KNOWN_NETWORKS_ERR_NOT_FOUND,                 "Network not found")            \
+X(KNOWN_NETWORKS_ERR_INVALID_INDEX,             "Invalid index")                \
+X(KNOWN_NETWORKS_ERR_BAD_ARGUMENT,              "Bad argument")                 \
+X(KNOWN_NETWORKS_ERR_SAVE_FAILED,               "Error saving network list")    \
+X(KNOWN_NETWORKS_ERR_RESTORE_FAILED,            "Error restoring network list")
