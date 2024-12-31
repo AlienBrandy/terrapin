@@ -12,7 +12,6 @@
 #include "freertos/queue.h"
 #include "esp_log.h"
 #include "menu.h"
-#include "main_menu.h"
 #include "console_windows.h"
 
 static const int MENU_QUEUE_LENGTH = 5;
@@ -40,25 +39,8 @@ static void parse_command(char *cmd, int *argc, ARGV_T *argv)
     (*argv)[*argc] = 0;
 }
 
-MENU_ERR_T menu_register_item(menu_item_t *menu_item, menu_item_t **list, int *list_size)
-{
-    menu_item_t *ptr = (menu_item_t *)realloc(*list, (*list_size + 1) * sizeof(menu_item_t));
-    if (ptr == NULL)
-    {
-        return MENU_ERR_REGISTER_FAIL;
-    }
-    *list = ptr;
-    (*list)[*list_size] = *menu_item;
-    (*list_size)++;
-
-    return MENU_ERR_NONE;
-}
-
 MENU_ERR_T menu_init(void)
 {
-    // initialize main menu
-    current_menu_item = main_menu_init();
-
     // create command queue
     h_queue = xQueueCreate(MENU_QUEUE_LENGTH, MENU_COMMAND_MAX_BYTES);
     if (h_queue == NULL)
@@ -109,8 +91,13 @@ static void menu_task(void *args)
     }
 }
 
-MENU_ERR_T menu_start(void)
+MENU_ERR_T menu_start(menu_function_t top_level_menu)
 {
+    // start with the top level as the current menu item
+    static menu_item_t top_level_menu_item;
+    top_level_menu_item.func = top_level_menu;
+    current_menu_item = &top_level_menu_item;
+
     // Launch menu state machine thread
     static const uint32_t MENU_TASK_STACK_DEPTH_BYTES = 4096;
     static const char *MENU_TASK_NAME = "MENU";

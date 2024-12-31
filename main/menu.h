@@ -14,7 +14,6 @@ typedef enum {
     MENU_ERR_NOT_INITIALIZED,
     MENU_ERR_TASK_START_FAIL,
     MENU_ERR_QUEUE_CREATE_FAIL,
-    MENU_ERR_REGISTER_FAIL,
 } MENU_ERR_T;
 
 /**
@@ -33,6 +32,5 @@ typedef struct menu_item_tag {
 } menu_item_t;
 
 MENU_ERR_T menu_init(void);
-MENU_ERR_T menu_start(void);
+MENU_ERR_T menu_start(menu_function_t top_level_menu);
 MENU_ERR_T menu_send_command(const char* command);
-MENU_ERR_T menu_register_item(menu_item_t* menu_item, menu_item_t** list, int* list_size);

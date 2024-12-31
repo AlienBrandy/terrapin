@@ -9,6 +9,7 @@
 #include "console_windows.h"
 #include "prompt.h"
 #include "menu.h"
+#include "main_menu.h"
 #include "ansi_term.h"
 #include "esp_log.h"
 
@@ -34,7 +35,7 @@ CONSOLE_ERR_T console_start(void)
     esp_log_set_vprintf(console_windows_logf);
 
     prompt_start();
-    menu_start();
+    menu_start(main_menu);
 
     return CONSOLE_ERR_NONE;
 }

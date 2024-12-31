@@ -9,5 +9,5 @@
 
 #include "menu.h"
 
-menu_item_t* known_networks_menu_init(void);
 menu_item_t* known_networks_menu(int argc, char* argv[]);
+void known_networks_menu_set_parent(menu_function_t parent_menu);
