@@ -29,7 +29,7 @@ static void fill_network_list_from_file(void)
     static char buf[BUF_SIZE];
     while (fgets(buf, BUF_SIZE, fp) && (num_networks < KNOWN_NETWORKS_MAX_ENTRIES))
     {
-        static const char *delims = ",";
+        static const char *delims = ",\n";
         char* token = strtok(buf, delims);
         if (token)
         {
@@ -187,6 +187,8 @@ KNOWN_NETWORKS_ERR_T known_networks_get_entry(uint8_t index, known_network_entry
     }
     if (index >= num_networks)
     {
+        entry->ssid[0] = 0;
+        entry->pwd[0] = 0;
         return KNOWN_NETWORKS_ERR_INVALID_INDEX;
     }
 

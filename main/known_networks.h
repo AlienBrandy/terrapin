@@ -24,7 +24,7 @@ typedef struct {
 } known_network_entry_t;
 
 /**
- * @brief known network function return codes
+ * @brief known network return codes
  */
 typedef enum {
     #define X(A, B) A,
