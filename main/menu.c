@@ -64,7 +64,7 @@ MENU_ERR_T menu_send_command(const char *command)
     if (retc != pdTRUE)
     {
         ESP_LOGE(PROJECT_NAME, "menu_send_command fail; queue full");
-        return MENU_ERR_QUEUE_CREATE_FAIL;
+        return MENU_ERR_QUEUE_FULL;
     }
 
     return MENU_ERR_NONE;

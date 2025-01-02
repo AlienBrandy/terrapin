@@ -128,8 +128,8 @@ RING_BUFFER_ERR_T ring_buffer_add(ring_buffer_handle_t rb, uint8_t* data, int da
         // delete old entry to free up space
         if (ring_buffer_remove(rb, NULL, NULL) != RING_BUFFER_ERR_NONE)
         {
-            // this could only happen if the entire buffer is too small
-            // to hold the element
+            // nothing left to remove.
+            // the entire buffer is too small to hold the new element
             return RING_BUFFER_ERR_DATA_OVERSIZED;
         }
 
