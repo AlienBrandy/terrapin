@@ -8,14 +8,14 @@
 #include <stdint.h>
 #include <string.h>
 #include "main_menu.h"
-#include "wifi_menu.h"
+#include "network_manager_menu.h"
 #include "console_windows.h"
 
-static menu_item_t* show_wifi_menu(int argc, char* argv[])
+static menu_item_t* show_network_manager_menu(int argc, char* argv[])
 {
     // switch menus
-    wifi_menu_set_parent(main_menu);
-    return wifi_menu(0, NULL);
+    network_manager_menu_set_parent(main_menu);
+    return network_manager_menu(0, NULL);
 }
 
 static menu_item_t menu_item_main = {
@@ -24,15 +24,15 @@ static menu_item_t menu_item_main = {
     .desc = ""
 };
 
-static menu_item_t menu_item_wifi = {
-    .func = show_wifi_menu,
-    .cmd  = "wifi",
-    .desc = "wifi submenu"
+static menu_item_t menu_item_network_manager = {
+    .func = show_network_manager_menu,
+    .cmd  = "network",
+    .desc = "network manager submenu"
 };
 
 static menu_item_t* menu_item_list[] = 
 {
-    &menu_item_wifi,
+    &menu_item_network_manager,
 };
 
 static void show_help(void)

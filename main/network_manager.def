@@ -1,0 +1,15 @@
+/**
+ * network_manager.def
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: MIT
+ */
+
+#define NETWORK_MANAGER_ERROR_LIST \
+X(NETWORK_MANAGER_ERR_NONE,                     "No Error") \
+X(NETWORK_MANAGER_ERR_INITIALIZATION_FAILED,    "Initialization failed") \
+X(NETWORK_MANAGER_ERR_NOT_INITIALIZED,          "Not initialized") \
+X(NETWORK_MANAGER_ERR_POST_FAILED,              "Post failed") \
+X(NETWORK_MANAGER_ERR_SCAN_FAILED,              "Scan failed") \
+X(NETWORK_MANAGER_ERR_CONNECT_FAILED,           "Connect failed") \
+X(NETWORK_MANAGER_ERR_COMMAND_IGNORED,          "Command ignored")
