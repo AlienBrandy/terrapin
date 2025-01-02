@@ -11,11 +11,13 @@
 #include "esp_event.h"
 #include "wifi.def"
 
+#define WIFI_SSID_FIELD_SIZE 33
+
 /**
  * @brief network data record
  */
 typedef struct {
-    uint8_t ssid[33];
+    char ssid[WIFI_SSID_FIELD_SIZE];
     int8_t  rssi;
 } wifi_network_record_t;
 

@@ -6,7 +6,6 @@
  */
 
 #include "wifi.h"
-#include "known_networks.h"
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
@@ -128,14 +127,6 @@ WIFI_ERR_T wifi_init(void)
         return WIFI_ERR_INIT_FAILED;
     }
 
-    // initialize list of known networks
-    KNOWN_NETWORKS_ERR_T kn_err = known_networks_init();
-    if (kn_err != KNOWN_NETWORKS_ERR_NONE)
-    {
-        ESP_LOGW("wifi", "known_networks_init failed: %s\n", known_networks_get_error_string(kn_err));
-        return WIFI_ERR_INIT_FAILED;
-    }
-
     initialized = true;
     return WIFI_ERR_NONE;
 }
@@ -236,7 +227,9 @@ WIFI_ERR_T wifi_get_network_record(uint16_t index, wifi_network_record_t* record
     assert(record != NULL);
 
     if (index > num_ap_records)
-    {
+    {   
+        record->ssid[0] = 0;
+        record->rssi = -127;
         return WIFI_ERR_INVALID_RECORD_INDEX;
     }
     memcpy(record->ssid, ap_records[index].ssid, sizeof(record->ssid));
