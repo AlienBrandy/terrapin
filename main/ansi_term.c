@@ -104,14 +104,28 @@ bool ansi_term_get_terminal_size(int* rows, int* cols)
 
 bool ansi_term_get_cursor_pos(int* rows, int* cols)
 {
-    *rows = -1;
-    *cols = -1;
-
     // Report cursor location
     static const char ANSI_TERM_GET_CURSOR_POS[] = "\x1b[6n";
     int nchars = write(STDOUT_FILENO, ANSI_TERM_GET_CURSOR_POS, sizeof(ANSI_TERM_GET_CURSOR_POS));
     if (nchars == -1)
     {
+        return false;
+    }
+
+    // configure a timeout in case the terminal isn't connected
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 500000;
+
+    // initialize the file descriptor set
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+
+    int ready = select(STDIN_FILENO + 1, &readfds, NULL, NULL, &timeout);
+    if (ready == 0)
+    {
+        // timeout
         return false;
     }
 

@@ -122,13 +122,15 @@ void console_windows_update_size(void)
     xSemaphoreTakeRecursive(console_mutex, portMAX_DELAY);
 
     // check terminal size
-    int max_row;
-    int max_col;
+    int max_row = screen_max_row;
+    int max_col = screen_max_col;
     if (ansi_term_get_terminal_size(&max_row, &max_col) == false)
     {
-        // command failed; possibly user input corrupted terminal replies to ESC sequences
-        xSemaphoreGiveRecursive(console_mutex);
-        return;
+        // command failed; possibly user input corrupted terminal replies to ESC sequences.
+        // assume default terminal size if this is the first attempt to determine the size,
+        // otherwise leave the settings as they were.
+        if (max_row == -1) max_row = 100;
+        if (max_col == -1) max_col = 80;
     }
 
     if ((max_row == screen_max_row) && (max_col == screen_max_col))
