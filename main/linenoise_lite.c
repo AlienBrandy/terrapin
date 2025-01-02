@@ -217,7 +217,7 @@ static void refreshSingleLine(struct linenoiseState *l, int flags)
         written += snprintf(l->abuf + written, l->abuflen - written, "\r\x1b[%dC", (int)(pos+plen));
     }
 
-    console_windows_write(CONSOLE_WINDOW_1, l->abuf, written);
+    console_windows_write(PROMPT_WINDOW, l->abuf, written);
 }
 
 /* Calls the two low level functions refreshSingleLine() or
@@ -262,7 +262,7 @@ int linenoiseEditInsert(struct linenoiseState *l, char c)
             {
                 // Avoid a full update of the line in the trivial case.
                 char d = (maskmode==1) ? '*' : c;
-                if (console_windows_putc(CONSOLE_WINDOW_1, d) == -1) return -1;
+                if (console_windows_putc(PROMPT_WINDOW, d) == -1) return -1;
             }
             else
             {
@@ -437,7 +437,7 @@ int linenoiseEditStart(struct linenoiseState *l, const char *prompt, size_t max_
      * mode later, in linenoiseEditFeed(). */
     if (!isatty(l->ifd)) return 0;
 
-    console_windows_printf(CONSOLE_WINDOW_1, PROMPT_COLOR "%s" PROMPT_COLOR_RESET, prompt);
+    console_windows_printf(PROMPT_WINDOW, PROMPT_COLOR "%s" PROMPT_COLOR_RESET, prompt);
     return 0;
 }
 
@@ -613,7 +613,7 @@ void linenoiseEditStop(struct linenoiseState *l)
 
     if (!isatty(l->ifd)) return;
     disableRawMode(l->ifd);
-    console_windows_printf(CONSOLE_WINDOW_1, "\n");
+    console_windows_printf(PROMPT_WINDOW, "\n");
 }
 
 /* At exit we'll try to fix the terminal to the initial conditions. */

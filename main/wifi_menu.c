@@ -16,26 +16,26 @@ static menu_function_t parent_menu = NULL;
 
 static menu_item_t* scan(int argc, char* argv[])
 {
-    console_windows_printf(CONSOLE_WINDOW_2, "scanning...\n");
+    console_windows_printf(MENU_WINDOW, "scanning...\n");
     WIFI_ERR_T code = wifi_scan();
     if (code == WIFI_ERR_NONE)
     {
         uint16_t num_networks = wifi_get_number_of_networks();
-        console_windows_printf(CONSOLE_WINDOW_2, "%d networks found.\n", num_networks);
+        console_windows_printf(MENU_WINDOW, "%d networks found.\n", num_networks);
         if (num_networks > 0)
         {
-            console_windows_printf(CONSOLE_WINDOW_2, "idx SSID                              dBm \n");
-            console_windows_printf(CONSOLE_WINDOW_2, "--- --------------------------------- ----\n");
+            console_windows_printf(MENU_WINDOW, "idx SSID                              dBm \n");
+            console_windows_printf(MENU_WINDOW, "--- --------------------------------- ----\n");
             for (uint16_t i = 0; i < num_networks; i++)
             {
                 wifi_network_record_t network_record;
                 wifi_get_network_record(i, &network_record);
-                console_windows_printf(CONSOLE_WINDOW_2, "%03d %-32.32s %4d\n", i, network_record.ssid, network_record.rssi);
+                console_windows_printf(MENU_WINDOW, "%03d %-32.32s %4d\n", i, network_record.ssid, network_record.rssi);
             }
         }
     }
 
-    console_windows_printf(CONSOLE_WINDOW_2, "scan: %s\n", wifi_get_error_string(code));
+    console_windows_printf(MENU_WINDOW, "scan: %s\n", wifi_get_error_string(code));
     return NULL;
 }
 
@@ -43,7 +43,7 @@ static menu_item_t* connect(int argc, char* argv[])
 {
     if (argc < 3)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "connect: missing param(s)\n");
+        console_windows_printf(MENU_WINDOW, "connect: missing param(s)\n");
         return NULL;
     }
 
@@ -51,17 +51,17 @@ static menu_item_t* connect(int argc, char* argv[])
     char* pwd  = argv[2];
     uint32_t timeout_ms = 10000;
 
-    console_windows_printf(CONSOLE_WINDOW_2, "connecting...\n");
+    console_windows_printf(MENU_WINDOW, "connecting...\n");
     WIFI_ERR_T code = wifi_connect(ssid, pwd, timeout_ms);
-    console_windows_printf(CONSOLE_WINDOW_2, "connect: %s\n", wifi_get_error_string(code));
+    console_windows_printf(MENU_WINDOW, "connect: %s\n", wifi_get_error_string(code));
     return NULL;
 }
 
 static menu_item_t* disconnect(int argc, char* argv[])
 {
-    console_windows_printf(CONSOLE_WINDOW_2, "disconnecting...\n");
+    console_windows_printf(MENU_WINDOW, "disconnecting...\n");
     WIFI_ERR_T code = wifi_disconnect();
-    console_windows_printf(CONSOLE_WINDOW_2, "disconnect: %s\n", wifi_get_error_string(code));
+    console_windows_printf(MENU_WINDOW, "disconnect: %s\n", wifi_get_error_string(code));
     return NULL;
 }
 
@@ -128,12 +128,12 @@ static menu_item_t* menu_item_list[] =
 
 static void show_help(void)
 {
-    console_windows_printf(CONSOLE_WINDOW_2, "\nwifi menu\n");
+    console_windows_printf(MENU_WINDOW, "\nwifi menu\n");
     static const int list_length = sizeof(menu_item_list) / sizeof(menu_item_list[0]);
 
     for (int i = 0; i < list_length; i++)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "%-20s: %s\n", menu_item_list[i]->cmd, menu_item_list[i]->desc);
+        console_windows_printf(MENU_WINDOW, "%-20s: %s\n", menu_item_list[i]->cmd, menu_item_list[i]->desc);
     }
 }
 
@@ -156,7 +156,7 @@ menu_item_t* wifi_menu(int argc, char* argv[])
             return (*menu_item_list[i]->func)(argc, argv);
         }
     }
-    console_windows_printf(CONSOLE_WINDOW_2, "unknown command [%s]\n", argv[0]);
+    console_windows_printf(MENU_WINDOW, "unknown command [%s]\n", argv[0]);
     return NULL;
 }
 

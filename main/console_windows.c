@@ -26,12 +26,12 @@ typedef struct {
 /**
  *01 |----------border---------|
  *02 |                         | <-- start row
- *03 |         window 1        |
+ *03 |         window 2        |
  *04 |                         |
  *05 |                         | <-- restore row
  *06 |----------border---------|
  *07 |                         | <-- start row
- *08 |         window 2        |
+ *08 |         window 1        |
  *09 |                         |
  *10 |                         | <-- restore row
  *11 |----------border---------| <-- max rows
@@ -143,17 +143,19 @@ void console_windows_update_size(void)
     // store new size
     screen_max_row = max_row;
     screen_max_col = max_col;
-
+    
     // reset window positions
+    //  - first window hard-coded to four rows
+    //  - second window takes remaining space
     windows[CONSOLE_WINDOW_1].num_cols    = max_col;
-    windows[CONSOLE_WINDOW_1].first_row   = 2;
     windows[CONSOLE_WINDOW_1].num_rows    = 4;
-    windows[CONSOLE_WINDOW_1].last_row    = windows[CONSOLE_WINDOW_1].first_row + windows[CONSOLE_WINDOW_1].num_rows - 1;
+    windows[CONSOLE_WINDOW_1].first_row   = max_row - windows[CONSOLE_WINDOW_1].num_rows;
+    windows[CONSOLE_WINDOW_1].last_row    = max_row - 1;
     windows[CONSOLE_WINDOW_1].restore_row = windows[CONSOLE_WINDOW_1].last_row;
 
     windows[CONSOLE_WINDOW_2].num_cols    = max_col;
-    windows[CONSOLE_WINDOW_2].first_row   = windows[CONSOLE_WINDOW_1].last_row + 2;
-    windows[CONSOLE_WINDOW_2].num_rows    = max_row - windows[CONSOLE_WINDOW_2].first_row;
+    windows[CONSOLE_WINDOW_2].num_rows    = windows[CONSOLE_WINDOW_1].first_row - 3;
+    windows[CONSOLE_WINDOW_2].first_row   = 2;
     windows[CONSOLE_WINDOW_2].last_row    = windows[CONSOLE_WINDOW_2].first_row + windows[CONSOLE_WINDOW_2].num_rows - 1;
     windows[CONSOLE_WINDOW_2].restore_row = windows[CONSOLE_WINDOW_2].last_row;
 

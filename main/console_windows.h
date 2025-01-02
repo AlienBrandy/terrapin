@@ -15,6 +15,9 @@ typedef enum {
     CONSOLE_WINDOW_MAX
 } CONSOLE_WINDOW_T;
 
+#define PROMPT_WINDOW CONSOLE_WINDOW_1
+#define MENU_WINDOW   CONSOLE_WINDOW_2
+
 void console_windows_init(void);
 void console_windows_update_size(void);
 void console_windows_get_size(int* rows, int* cols);

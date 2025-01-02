@@ -38,12 +38,12 @@ static menu_item_t* menu_item_list[] =
 static void show_help(void)
 {
     // first item by convention is the name of the menu and gets unique formatting
-    console_windows_printf(CONSOLE_WINDOW_2, "\nmain menu\n");
+    console_windows_printf(MENU_WINDOW, "\nmain menu\n");
 
     static const int list_length = sizeof(menu_item_list) / sizeof(menu_item_list[0]);
     for (int i = 0; i < list_length; i++)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "%-20s: %s\n", menu_item_list[i]->cmd, menu_item_list[i]->desc);
+        console_windows_printf(MENU_WINDOW, "%-20s: %s\n", menu_item_list[i]->cmd, menu_item_list[i]->desc);
     }
 }
 
@@ -66,6 +66,6 @@ menu_item_t* main_menu(int argc, char* argv[])
             return (*menu_item_list[i]->func)(argc, argv);
         }
     }
-    console_windows_printf(CONSOLE_WINDOW_2, "unknown command [%s]\n", argv[0]);
+    console_windows_printf(MENU_WINDOW, "unknown command [%s]\n", argv[0]);
     return NULL;
 }

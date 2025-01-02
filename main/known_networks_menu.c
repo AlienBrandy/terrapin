@@ -18,7 +18,7 @@ static menu_item_t* add(int argc, char* argv[])
 {
     if (argc < 3)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "add: missing arguments.\n");
+        console_windows_printf(MENU_WINDOW, "add: missing arguments.\n");
         return NULL;
     }
 
@@ -26,7 +26,7 @@ static menu_item_t* add(int argc, char* argv[])
     char* pwd  = argv[2];
 
     KNOWN_NETWORKS_ERR_T code = known_networks_add(ssid, pwd);
-    console_windows_printf(CONSOLE_WINDOW_2, "add: %s\n", known_networks_get_error_string(code));
+    console_windows_printf(MENU_WINDOW, "add: %s\n", known_networks_get_error_string(code));
     return NULL;
 }
 
@@ -34,14 +34,14 @@ static menu_item_t* remove(int argc, char* argv[])
 {
     if (argc < 2)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "remove: missing arguments.\n");
+        console_windows_printf(MENU_WINDOW, "remove: missing arguments.\n");
         return NULL;
     }
 
     char* ssid = argv[1];
 
     KNOWN_NETWORKS_ERR_T code = known_networks_remove(ssid);
-    console_windows_printf(CONSOLE_WINDOW_2, "remove: %s\n", known_networks_get_error_string(code));
+    console_windows_printf(MENU_WINDOW, "remove: %s\n", known_networks_get_error_string(code));
     return NULL;
 }
 
@@ -49,7 +49,7 @@ static menu_item_t* show(int argc, char* argv[])
 {
     if (argc < 2)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "get: missing arguments.\n");
+        console_windows_printf(MENU_WINDOW, "get: missing arguments.\n");
         return NULL;
     }
 
@@ -58,9 +58,9 @@ static menu_item_t* show(int argc, char* argv[])
     KNOWN_NETWORKS_ERR_T code = known_networks_get_entry(index, &entry);
     if (code == KNOWN_NETWORKS_ERR_NONE)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "index %d: %s\n", index, entry.ssid);
+        console_windows_printf(MENU_WINDOW, "index %d: %s\n", index, entry.ssid);
     }
-    console_windows_printf(CONSOLE_WINDOW_2, "show: %s\n", known_networks_get_error_string(code));
+    console_windows_printf(MENU_WINDOW, "show: %s\n", known_networks_get_error_string(code));
 
     return NULL;
 }
@@ -70,18 +70,18 @@ static menu_item_t* show_all(int argc, char* argv[])
     uint8_t num_entries = known_networks_get_number_of_entries();
     if (num_entries > 0)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "\nidx SSID\n");
-        console_windows_printf(CONSOLE_WINDOW_2, "--- ---------------------------------\n");
+        console_windows_printf(MENU_WINDOW, "\nidx SSID\n");
+        console_windows_printf(MENU_WINDOW, "--- ---------------------------------\n");
         for (int idx = 0; idx < num_entries; idx++)
         {
             known_network_entry_t entry;
             known_networks_get_entry(idx, &entry);
-            console_windows_printf(CONSOLE_WINDOW_2, "%03d %-32.32s\n", idx, entry.ssid);
+            console_windows_printf(MENU_WINDOW, "%03d %-32.32s\n", idx, entry.ssid);
         }
     }
     else
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "show: no known networks recorded.\n");
+        console_windows_printf(MENU_WINDOW, "show: no known networks recorded.\n");
     }
     return NULL;
 }
@@ -142,12 +142,12 @@ static menu_item_t* menu_item_list[] =
 
 static void show_help(void)
 {
-    console_windows_printf(CONSOLE_WINDOW_2, "\nknown networks menu\n");
+    console_windows_printf(MENU_WINDOW, "\nknown networks menu\n");
 
     static const int list_length = sizeof(menu_item_list) / sizeof(menu_item_list[0]);
     for (int i = 0; i < list_length; i++)
     {
-        console_windows_printf(CONSOLE_WINDOW_2, "%-20s: %s\n", menu_item_list[i]->cmd, menu_item_list[i]->desc);
+        console_windows_printf(MENU_WINDOW, "%-20s: %s\n", menu_item_list[i]->cmd, menu_item_list[i]->desc);
     }
 }
 
@@ -170,7 +170,7 @@ menu_item_t* known_networks_menu(int argc, char* argv[])
             return (*menu_item_list[i]->func)(argc, argv);
         }
     }
-    console_windows_printf(CONSOLE_WINDOW_2, "unknown command [%s]\n", argv[0]);
+    console_windows_printf(MENU_WINDOW, "unknown command [%s]\n", argv[0]);
     return NULL;
 }
 
