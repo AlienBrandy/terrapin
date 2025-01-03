@@ -38,12 +38,10 @@ typedef struct {
  */
 
 static WINDOW_T windows[CONSOLE_WINDOW_MAX];
-
 static CONSOLE_WINDOW_T active_window = CONSOLE_WINDOW_MAX;
-
 static SemaphoreHandle_t console_mutex = NULL;
-static int   screen_max_row = -1;
-static int   screen_max_col = -1;
+static int screen_max_row = -1;
+static int screen_max_col = -1;
 
 static void draw_horizontal_border(int length, ANSI_TERM_COLOR_T color)
 {
@@ -205,7 +203,7 @@ int console_windows_logf(const char* format, va_list args)
 {
     // direct log messages to big window
     xSemaphoreTakeRecursive(console_mutex, portMAX_DELAY);
-    set_active_window(CONSOLE_WINDOW_2);
+    set_active_window(LOG_WINDOW);
     int written = vfprintf(stdout, format, args);
     xSemaphoreGiveRecursive(console_mutex);
 

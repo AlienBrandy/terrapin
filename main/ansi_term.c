@@ -172,7 +172,7 @@ void ansi_term_erase_screen(void)
     write(STDOUT_FILENO, ANSI_ESC_ERASE, sizeof(ANSI_ESC_ERASE));
 }
 
-void ansi_term_set_attributes(ANSI_TERM_COLOR_T color, uint8_t attribute)
+void ansi_term_set_attributes(ANSI_TERM_COLOR_T color, ANSI_TERM_ATTRIB_T attribute)
 {
     char buf[20];
     int nbytes = snprintf(buf, sizeof(buf), "\x1b[%d;%dm", attribute, color);
