@@ -11,6 +11,7 @@
 #include "filesystem.h"
 #include "network_manager.h"
 #include "datastream.h"
+#include "temp_sensor.h"
 
 void app_main(void)
 {
@@ -48,6 +49,9 @@ void app_main(void)
 
     // initialize datastream module
     datastream_init();
+
+    // start temp sensor task
+    temp_sensor_init();
 
     while (1) {}
 }
