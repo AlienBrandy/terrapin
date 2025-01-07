@@ -10,6 +10,7 @@
 #include "console.h"
 #include "filesystem.h"
 #include "network_manager.h"
+#include "datastream.h"
 
 void app_main(void)
 {
@@ -44,6 +45,9 @@ void app_main(void)
         ESP_LOGE(PROJECT_NAME, "network_manager_init() failed");
         return;
     }
+
+    // initialize datastream module
+    datastream_init();
 
     while (1) {}
 }

@@ -1,0 +1,15 @@
+/**
+ * datastream.def
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2025 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: Apache-2.0
+ * 
+ */
+
+// Name                 Topic                           Units       Precision
+//
+#define DATASTREAM_LIST \
+X( AMBIENT_TEMPERATURE, "Sensor/Ambient/Temperature",   "DegC",     2  )\
+X( AMBIENT_HUMIDITY,    "Sensor/Ambient/Humidity",      "%RH",      1  )\
+X( PORTA_BIT0,          "Sensor/PortA/Bit0",            "",         0  )\
+X( RAM_UTILIZATION,     "System/CPU/RAM",               "Bytes",    0  )
