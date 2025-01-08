@@ -12,6 +12,7 @@
 #include "network_manager.h"
 #include "datastream.h"
 #include "temp_sensor.h"
+#include "rgb_led.h"
 
 void app_main(void)
 {
@@ -52,6 +53,13 @@ void app_main(void)
 
     // start temp sensor task
     temp_sensor_init();
+
+    // initialize LED module
+    if (!rgb_led_init())
+    {
+        ESP_LOGE(PROJECT_NAME, "rgb_led_init() failed");
+        return;
+    }
 
     while (1) {}
 }

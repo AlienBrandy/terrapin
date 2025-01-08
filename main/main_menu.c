@@ -10,6 +10,7 @@
 #include "main_menu.h"
 #include "network_manager_menu.h"
 #include "datastream_menu.h"
+#include "rgb_led_menu.h"
 #include "console_windows.h"
 
 static menu_item_t* show_network_manager_menu(int argc, char* argv[])
@@ -24,6 +25,13 @@ static menu_item_t* show_datastream_menu(int argc, char* argv[])
     // switch menus
     datastream_menu_set_parent(main_menu);
     return datastream_menu(0, NULL);
+}
+
+static menu_item_t* show_rgb_led_menu(int argc, char* argv[])
+{
+    // switch menus
+    rgb_led_menu_set_parent(main_menu);
+    return rgb_led_menu(0, NULL);
 }
 
 static menu_item_t menu_item_main = {
@@ -44,10 +52,17 @@ static menu_item_t menu_item_datastream = {
     .desc = "datastream submenu"
 };
 
+static menu_item_t menu_item_rgb_led = {
+    .func = show_rgb_led_menu,
+    .cmd  = "rgb",
+    .desc = "rgb_led submenu"
+};
+
 static menu_item_t* menu_item_list[] = 
 {
     &menu_item_network_manager,
     &menu_item_datastream,
+    &menu_item_rgb_led,
 };
 
 static void show_help(void)
