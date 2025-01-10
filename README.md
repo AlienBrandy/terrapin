@@ -1,4 +1,4 @@
-# Datalogger
+# Terrapin
 
 A project for recording sensor data using an ESP32-S3.
 
