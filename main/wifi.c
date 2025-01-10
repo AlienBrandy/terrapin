@@ -64,14 +64,6 @@ WIFI_ERR_T wifi_init(void)
     // create an event group for signaling wifi events from the event handler
     wifi_event_group = xEventGroupCreate();
 
-    // create the event loop so we can register event callback
-    esp_err = esp_event_loop_create_default();
-    if (esp_err != ESP_OK)
-    {
-        ESP_LOGW("wifi",  "esp_event_loop_create_default failed: %d\n", esp_err);
-        return WIFI_ERR_INIT_FAILED;
-    }
-
     // create wifi station
     esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
     if (sta_netif == NULL)

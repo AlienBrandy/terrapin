@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include "esp_log.h"
+#include "esp_event.h"
 #include "console.h"
 #include "filesystem.h"
 #include "network_manager.h"
@@ -21,6 +22,14 @@ void app_main(void)
     if (err != FILESYSTEM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "filesystem_init() failed");        
+        return;
+    }
+
+    // create the default event loop for system events
+    esp_err_t esp_err = esp_event_loop_create_default();
+    if (esp_err != ESP_OK)
+    {
+        ESP_LOGW(PROJECT_NAME, "esp_event_loop_create_default failed: %d\n", esp_err);
         return;
     }
 
