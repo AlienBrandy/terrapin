@@ -15,15 +15,38 @@ static menu_function_t parent_menu = NULL;
 
 static menu_item_t* show(int argc, char* argv[])
 {
-    console_windows_printf(MENU_WINDOW, "\nName                                 Value\n");
-    console_windows_printf(MENU_WINDOW, "-----------------------------------  --------------------\n");
-    for (int idx = 0; idx < DATASTREAM_ID_MAX; idx++)
+    datastream_t ds;
+    console_windows_printf(MENU_WINDOW, "\nIdx Name                                 Value\n");
+    console_windows_printf(MENU_WINDOW, "--- -----------------------------------  --------------------\n");
+    int idx = 0;
+    while (datastream_get(idx, &ds) == DATASTREAM_ERR_NONE)
     {
-        datastream_t ds = datastream_get(idx);
-        console_windows_printf(MENU_WINDOW, "%-32.32s %10.*f %-10.10s\n", ds.name, ds.precision, ds.value, ds.units);
+        console_windows_printf(MENU_WINDOW, "%02d  %-32.32s %10.*f %-10.10s\n", idx, ds.name, ds.precision, ds.value, ds.units);
+        idx++;
     }
     console_windows_printf(MENU_WINDOW, "\n");
 
+    return NULL;
+}
+
+static menu_item_t* update(int argc, char* argv[])
+{
+    if (argc < 3)
+    {
+        console_windows_printf(MENU_WINDOW, "update: missing param(s)\n");
+        return NULL;
+    }
+
+    int id = atoi(argv[1]);
+    double value = atof(argv[2]);
+    datastream_t ds;
+    DATASTREAM_ERR_T retc = datastream_get(id, &ds);
+    if (retc == DATASTREAM_ERR_NONE)
+    {
+        retc = datastream_update(id, value);
+    }
+
+    console_windows_printf(MENU_WINDOW, "update: %s\n", datastream_get_error_string(retc));
     return NULL;
 }
 
@@ -54,10 +77,17 @@ static menu_item_t menu_item_show = {
     .desc = "show all networks on list"
 };
 
+static menu_item_t menu_item_update = {
+    .func = update,
+    .cmd  = "update",
+    .desc = "update datastream <idx> with <value>"
+};
+
 static menu_item_t* menu_item_list[] = 
 {
     &menu_item_exit,
-    &menu_item_show
+    &menu_item_show,
+    &menu_item_update,
 };
 
 static void show_help(void)

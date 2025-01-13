@@ -1,0 +1,23 @@
+/**
+ * terrapin.def
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2025 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: Apache-2.0
+ * 
+ */
+
+/**
+ * @brief a list of data objects published for system-wide access
+ *
+ * these macro definitions should be expanded into an enumerated list in a public
+ * header file, and also expanded to initialize an array of datastream objects
+ * in an implementation file.
+ */ 
+// Name                 Topic                           Units       Precision
+//
+#define DATASTREAM_LIST \
+X( DATASTREAM_IDX_AMBIENT_TEMPERATURE, "Sensor/Ambient/Temperature",   "DegC",     2  )\
+X( DATASTREAM_IDX_AMBIENT_HUMIDITY,    "Sensor/Ambient/Humidity",      "%RH",      1  )\
+X( DATASTREAM_IDX_GPIO_38,             "Sensor/GPIO/38",               "",         0  )\
+X( DATASTREAM_IDX_RAM_UTILIZATION,     "System/CPU/RAM",               "Bytes",    0  )\
+X( DATASTREAM_IDX_RGB_LED,             "UI/Led/Color",                 "RGB",      0  )

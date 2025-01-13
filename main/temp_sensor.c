@@ -13,6 +13,7 @@
 #include "temp_sensor.h"
 
 static temperature_sensor_handle_t temp_sensor = NULL;
+static uint32_t temp_sensor_datastream_idx = UINT32_MAX;
 
 static void temp_sensor_task(void* args)
 {
@@ -20,16 +21,20 @@ static void temp_sensor_task(void* args)
     {
         float val;
         temperature_sensor_get_celsius(temp_sensor, &val);
-        datastream_update(AMBIENT_TEMPERATURE, val);
+        datastream_update(temp_sensor_datastream_idx, val);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
 
-void temp_sensor_init(void)
+void temp_sensor_init(uint32_t datastream_index)
 {
+    // initialize temp sensor device
     temperature_sensor_config_t temp_sensor_config = TEMPERATURE_SENSOR_CONFIG_DEFAULT(10, 50);
     temperature_sensor_install(&temp_sensor_config, &temp_sensor);
     temperature_sensor_enable(temp_sensor);
+
+    // store index to relevant datastream for updating
+    temp_sensor_datastream_idx = datastream_index;
 
     // create thread
     static const uint32_t TEMP_SENSOR_TASK_STACK_DEPTH_BYTES = 4096;
@@ -41,6 +46,11 @@ void temp_sensor_init(void)
 
 float temp_sensor_get(void)
 {
-    float val = (float)datastream_get(AMBIENT_TEMPERATURE).value;
-    return val;
+    datastream_t ds;
+    if (datastream_get(temp_sensor_datastream_idx, &ds) == DATASTREAM_ERR_NONE)
+    {
+        return (float)ds.value;
+    }
+
+    return 0;
 }

@@ -6,10 +6,9 @@
  * 
  */
 
-// Name                 Topic                           Units       Precision
-//
-#define DATASTREAM_LIST \
-X( AMBIENT_TEMPERATURE, "Sensor/Ambient/Temperature",   "DegC",     2  )\
-X( AMBIENT_HUMIDITY,    "Sensor/Ambient/Humidity",      "%RH",      1  )\
-X( PORTA_BIT0,          "Sensor/PortA/Bit0",            "",         0  )\
-X( RAM_UTILIZATION,     "System/CPU/RAM",               "Bytes",    0  )
+#define DATASTREAM_ERROR_LIST \
+X(DATASTREAM_ERR_NONE,                     "No Error") \
+X(DATASTREAM_ERR_CREATE_EVENT_LOOP_FAILED, "Create event loop failed") \
+X(DATASTREAM_ERR_INVALID_INDEX,            "Invalid index") \
+X(DATASTREAM_ERR_REGISTER_EVENT_FAILED,    "Event handler registration failed") \
+X(DATASTREAM_ERR_POST_EVENT_FAILED,        "Post event failed")
