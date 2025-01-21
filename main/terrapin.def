@@ -13,11 +13,11 @@
  * header file, and also expanded to initialize an array of datastream objects
  * in an implementation file.
  */ 
-// Name                 Topic                           Units       Precision
+// Name                         Topic                           Units       Precision
 //
 #define DATASTREAM_LIST \
-X( DATASTREAM_IDX_AMBIENT_TEMPERATURE, "Sensor/Ambient/Temperature",   "DegC",     2  )\
-X( DATASTREAM_IDX_AMBIENT_HUMIDITY,    "Sensor/Ambient/Humidity",      "%RH",      1  )\
-X( DATASTREAM_IDX_GPIO_38,             "Sensor/GPIO/38",               "",         0  )\
-X( DATASTREAM_IDX_RAM_UTILIZATION,     "System/CPU/RAM",               "Bytes",    0  )\
-X( DATASTREAM_IDX_RGB_LED,             "UI/Led/Color",                 "RGB",      0  )
+X( TERRAPIN_AMBIENT_TEMPERATURE,      "v1/devices/me/telemetry",      "DegC",     2  )\
+X( TERRAPIN_AMBIENT_HUMIDITY,         "v1/devices/me/telemetry",      "%RH",      1  )\
+X( TERRAPIN_RAM_UTILIZATION,          "v1/devices/me/telemetry",      "Bytes",    0  )\
+X( TERRAPIN_GPIO_38,                  "v1/devices/me/attributes",     "",         0  )\
+X( TERRAPIN_RGB_LED,                  "v1/devices/me/attributes",     "RGB",      0  )

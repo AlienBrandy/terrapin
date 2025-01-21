@@ -16,7 +16,7 @@
 /**
  * @brief list of terrapin datastreams
  */
-static datastream_t datastreams[DATASTREAM_ID_MAX] =
+static datastream_t datastreams[TERRAPIN_DATASTREAM_IDX_MAX] =
 {
     #define X(NAME, TOPIC, UNITS, PRECISION) {.name = #NAME, .topic = TOPIC, .units = UNITS, .precision = PRECISION},
     DATASTREAM_LIST
@@ -28,11 +28,8 @@ static datastream_t datastreams[DATASTREAM_ID_MAX] =
  */
 static void rgb_led_update_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
 {
-    (void)handler_args; // unused
-    (void)event_data;   // unused
-
     datastream_t ds;
-    datastream_get(DATASTREAM_IDX_RGB_LED, &ds);
+    datastream_get(TERRAPIN_RGB_LED, &ds);
     rgb_led_write(ds.value);
 }
 
@@ -41,25 +38,22 @@ static void rgb_led_update_handler(void* handler_args, esp_event_base_t base, in
  */
 static void gpio38_update_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
 {
-    (void)handler_args; // unused
-    (void)event_data;   // unused
-
     datastream_t ds;
-    datastream_get(DATASTREAM_IDX_GPIO_38, &ds);
+    datastream_get(TERRAPIN_GPIO_38, &ds);
     gpio_set_level(GPIO_NUM_38, ds.value ? 1 : 0);
 }
 
 bool terrapin_init(void)
 {
     // initialize datastream module
-    if (datastream_init(datastreams, DATASTREAM_ID_MAX) != DATASTREAM_ERR_NONE)
+    if (datastream_init(datastreams, TERRAPIN_DATASTREAM_IDX_MAX) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_init() failed");
         return false;
     }
 
     // start the temp sensor task
-    temp_sensor_init(DATASTREAM_IDX_AMBIENT_TEMPERATURE);
+    temp_sensor_init(TERRAPIN_AMBIENT_TEMPERATURE);
 
     // initialize the LED module
     if (!rgb_led_init())
@@ -82,12 +76,12 @@ bool terrapin_init(void)
     }
 
     // register datastream update handlers
-    if (datastream_register_update_handler(DATASTREAM_IDX_RGB_LED, rgb_led_update_handler) != DATASTREAM_ERR_NONE)
+    if (datastream_register_update_handler(TERRAPIN_RGB_LED, rgb_led_update_handler) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for RGB_LED failed.\n");
         return false;
     }
-    if (datastream_register_update_handler(DATASTREAM_IDX_GPIO_38, gpio38_update_handler) != DATASTREAM_ERR_NONE)
+    if (datastream_register_update_handler(TERRAPIN_GPIO_38, gpio38_update_handler) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for GPIO_38 failed.\n");
         return false;

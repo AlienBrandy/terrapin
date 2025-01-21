@@ -18,7 +18,7 @@ typedef enum {
     #define X(NAME, TOPIC, UNITS, PRECISION) NAME,
     DATASTREAM_LIST
     #undef X
-    DATASTREAM_ID_MAX
+    TERRAPIN_DATASTREAM_IDX_MAX
 } DATASTREAM_ID_T;
 
 /**
