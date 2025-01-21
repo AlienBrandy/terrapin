@@ -12,6 +12,7 @@
 #include "datastream_menu.h"
 #include "rgb_led_menu.h"
 #include "console_windows.h"
+#include "esp_log.h"
 
 static menu_item_t* show_network_manager_menu(int argc, char* argv[])
 {
@@ -34,10 +35,28 @@ static menu_item_t* show_rgb_led_menu(int argc, char* argv[])
     return rgb_led_menu(0, NULL);
 }
 
+static menu_item_t* set_log_level(int argc, char* argv[])
+{
+    if (argc < 2)
+    {
+        console_windows_printf(MENU_WINDOW, "set_log_level: missing param(s)\n");
+        return NULL;
+    }
+    int level = atoi(argv[1]);
+    esp_log_level_set(PROJECT_NAME, level);
+    return NULL;
+}
+
 static menu_item_t menu_item_main = {
     .func = main_menu,
     .cmd  = "",
     .desc = ""
+};
+
+static menu_item_t menu_item_set_log_level = {
+    .func = set_log_level,
+    .cmd  = "log_level",
+    .desc = "set logging to <level> (0:none thru 5:verbose)"
 };
 
 static menu_item_t menu_item_network_manager = {
@@ -60,6 +79,7 @@ static menu_item_t menu_item_rgb_led = {
 
 static menu_item_t* menu_item_list[] = 
 {
+    &menu_item_set_log_level,
     &menu_item_network_manager,
     &menu_item_datastream,
     &menu_item_rgb_led,

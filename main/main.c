@@ -55,6 +55,9 @@ void app_main(void)
         return;
     }
 
+    // set log level to show warnings and errors
+    esp_log_level_set(PROJECT_NAME, ESP_LOG_WARN);
+    
     // project-specific initialization
     if (!terrapin_init())
     {
