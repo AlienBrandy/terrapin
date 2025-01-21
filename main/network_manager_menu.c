@@ -9,8 +9,11 @@
 #include <string.h>
 #include "network_manager_menu.h"
 #include "wifi_menu.h"
+#include "mqtt_menu.h"
 #include "console_windows.h"
 #include "network_manager.h"
+#include "mqtt.h"
+#include "temp_sensor.h"
 
 static menu_function_t parent_menu = NULL;
 
@@ -19,6 +22,13 @@ static menu_item_t* show_wifi_menu(int argc, char* argv[])
     // switch menus
     wifi_menu_set_parent(network_manager_menu);
     return wifi_menu(0, NULL);
+}
+
+static menu_item_t* show_mqtt_menu(int argc, char* argv[])
+{
+    // switch menus
+    mqtt_menu_set_parent(network_manager_menu);
+    return mqtt_menu(0, NULL);
 }
 
 static menu_item_t* initialize(int argc, char* argv[])
@@ -94,6 +104,12 @@ static menu_item_t menu_item_wifi = {
     .desc = "wifi menu"
 };
 
+static menu_item_t menu_item_mqtt = {
+    .func = show_mqtt_menu,
+    .cmd  = "mqtt",
+    .desc = "mqtt menu"
+};
+
 static menu_item_t menu_item_initialize = {
     .func = initialize,
     .cmd  = "init",
@@ -133,6 +149,7 @@ static menu_item_t* menu_item_list[] =
     &menu_item_disconnect,
     &menu_item_show_current_state,
     &menu_item_wifi,
+    &menu_item_mqtt,
 };
 
 static void show_help(void)
