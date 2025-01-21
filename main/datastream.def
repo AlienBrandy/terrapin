@@ -9,6 +9,7 @@
 #define DATASTREAM_ERROR_LIST \
 X(DATASTREAM_ERR_NONE,                     "No Error") \
 X(DATASTREAM_ERR_CREATE_EVENT_LOOP_FAILED, "Create event loop failed") \
-X(DATASTREAM_ERR_INVALID_INDEX,            "Invalid index") \
 X(DATASTREAM_ERR_REGISTER_EVENT_FAILED,    "Event handler registration failed") \
+X(DATASTREAM_ERR_INVALID_INDEX,            "Invalid index") \
+X(DATASTREAM_ERR_INVALID_NAME,             "Invalid name") \
 X(DATASTREAM_ERR_POST_EVENT_FAILED,        "Post event failed")

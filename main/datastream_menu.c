@@ -39,13 +39,22 @@ static menu_item_t* update(int argc, char* argv[])
 
     int id = atoi(argv[1]);
     double value = atof(argv[2]);
-    datastream_t ds;
-    DATASTREAM_ERR_T retc = datastream_get(id, &ds);
-    if (retc == DATASTREAM_ERR_NONE)
+    DATASTREAM_ERR_T retc = datastream_update(id, value);
+    console_windows_printf(MENU_WINDOW, "update: %s\n", datastream_get_error_string(retc));
+    return NULL;
+}
+
+static menu_item_t* update_by_name(int argc, char* argv[])
+{
+    if (argc < 3)
     {
-        retc = datastream_update(id, value);
+        console_windows_printf(MENU_WINDOW, "update: missing param(s)\n");
+        return NULL;
     }
 
+    char* name = argv[1];
+    double value = atof(argv[2]);
+    DATASTREAM_ERR_T retc = datastream_update_by_name(name, value);
     console_windows_printf(MENU_WINDOW, "update: %s\n", datastream_get_error_string(retc));
     return NULL;
 }
@@ -83,11 +92,18 @@ static menu_item_t menu_item_update = {
     .desc = "update datastream <idx> with <value>"
 };
 
+static menu_item_t menu_item_update_by_name = {
+    .func = update_by_name,
+    .cmd  = "update_name",
+    .desc = "update datastream <name> with <value>"
+};
+
 static menu_item_t* menu_item_list[] = 
 {
     &menu_item_exit,
     &menu_item_show,
     &menu_item_update,
+    &menu_item_update_by_name,
 };
 
 static void show_help(void)

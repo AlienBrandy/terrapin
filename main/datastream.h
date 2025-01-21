@@ -83,6 +83,19 @@ DATASTREAM_ERR_T datastream_init(datastream_t* datastream_array, uint32_t array_
 DATASTREAM_ERR_T datastream_update(uint32_t datastream_id, double val);
 
 /**
+ * @brief update a datastream with a new value
+ * 
+ * The datastream is updated with the given value and the timestamp is updated 
+ * to the current time. An event is posted to inform any registered callbacks that
+ * an update has occured.
+ * 
+ * @param datastream_name the name of the datastream to update
+ * @param value the value to write
+ * @returns true if the datatstream was successfully updated 
+ */
+DATASTREAM_ERR_T datastream_update_by_name(const char* datastream_name, double value);
+
+/**
  * @brief retrieves a datastream.
  * 
  * @param datastream_id the index of the datastream to fetch

@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include "FreeRTOS/FreeRTOS.h"
 #include "FreeRTOS/semphr.h"
 #include "esp_event.h"
@@ -52,7 +53,7 @@ DATASTREAM_ERR_T datastream_init(datastream_t* datastream_array, uint32_t array_
         .queue_size = 25,
         .task_name = "Datastream evt loop",
         .task_priority = 2,
-        .task_stack_size = 2048,
+        .task_stack_size = 4095,
         .task_core_id = tskNO_AFFINITY,
     };
 
@@ -78,6 +79,18 @@ DATASTREAM_ERR_T datastream_update(uint32_t datastream_id, double value)
     // publish update to event loop
     esp_err_t retc = esp_event_post_to(loop_handle, DATASTREAM_EVENTS, datastream_id, NULL, 0, portMAX_DELAY);
     return (retc == ESP_OK) ? DATASTREAM_ERR_NONE : DATASTREAM_ERR_POST_EVENT_FAILED;
+}
+
+DATASTREAM_ERR_T datastream_update_by_name(const char* datastream_name, double value)
+{
+    for (int idx = 0; idx < number_of_datastreams; idx++)
+    {
+        if (strcmp(datastreams[idx].name, datastream_name) == 0)
+        {
+            return datastream_update(idx, value);
+        }
+    }
+    return DATASTREAM_ERR_INVALID_NAME;
 }
 
 DATASTREAM_ERR_T datastream_get(uint32_t datastream_id, datastream_t* datastream)
