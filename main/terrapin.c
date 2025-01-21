@@ -12,6 +12,8 @@
 #include "temp_sensor.h"
 #include "rgb_led.h"
 #include "driver/gpio.h"
+#include "mqtt.h"
+#include "console_windows.h"
 
 /**
  * @brief list of terrapin datastreams
@@ -41,6 +43,20 @@ static void gpio38_update_handler(void* handler_args, esp_event_base_t base, int
     datastream_t ds;
     datastream_get(TERRAPIN_GPIO_38, &ds);
     gpio_set_level(GPIO_NUM_38, ds.value ? 1 : 0);
+}
+
+/**
+ * @brief handler for updates to telemetry data
+ */
+static void telemetry_update_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
+{
+    datastream_t ds;
+    if (datastream_get(id, &ds) == DATASTREAM_ERR_NONE)
+    {
+        static char data[20];
+        snprintf(data, 20, "%.*f", ds.precision, ds.value);
+        mqtt_publish(ds.topic, ds.name, data);
+    }
 }
 
 bool terrapin_init(void)
@@ -84,6 +100,11 @@ bool terrapin_init(void)
     if (datastream_register_update_handler(TERRAPIN_GPIO_38, gpio38_update_handler) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for GPIO_38 failed.\n");
+        return false;
+    }
+    if (datastream_register_update_handler(TERRAPIN_AMBIENT_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
+    {
+        ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for AMBIENT_TEMPERATURE failed.\n");
         return false;
     }
 
