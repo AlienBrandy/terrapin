@@ -147,6 +147,14 @@ bool mqtt_start(void)
     return true;
 }
 
+void mqtt_stop(void)
+{
+    if (client != NULL)
+    {   
+        esp_mqtt_client_stop(client);
+    }
+}
+
 void mqtt_publish(const char* topic, const char* key, const char* val)
 {
     if (client == NULL)

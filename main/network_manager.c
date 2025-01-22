@@ -12,6 +12,8 @@
 #include "known_networks.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/timers.h"
+#include "config.h"
+#include "mqtt.h"
 
 typedef enum {
     SIGNAL_INITIALIZE,
@@ -112,6 +114,13 @@ static void state_uninitialized(state_machine_message_t* message)
             // initialization complete
             state_machine_set_state(me.state_machine, state_not_connected);
             send_reply(message, NETWORK_MANAGER_ERR_NONE);
+
+            // check auto-connect on bootup
+            if (config_get_boolean(CONFIG_KEY_NETWORK_AUTOCONNECT))
+            {
+                static state_machine_message_t msg = {.signal = SIGNAL_CONNECT};
+                state_machine_post(me.state_machine, &msg);
+            }
             return;
         }
         default:
@@ -129,6 +138,7 @@ void state_not_connected(state_machine_message_t* message)
         case SIGNAL_ENTRY:
         {
             me.current_state = "NOT_CONNECTED";
+
             return;
         }
         case SIGNAL_EXIT:
@@ -337,10 +347,15 @@ void state_connected(state_machine_message_t* message)
         case SIGNAL_ENTRY:
         {
             me.current_state = "CONNECTED";
+            if (config_get_boolean(CONFIG_KEY_MQTT_ENABLE))
+            {
+                mqtt_start();
+            }
             return;
         }
         case SIGNAL_EXIT:
         {
+            mqtt_stop();
             return;
         }
         case SIGNAL_CONNECT:
