@@ -2,7 +2,7 @@
  * network_manager.def
  * 
  * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #define NETWORK_MANAGER_ERROR_LIST \
