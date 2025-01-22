@@ -1,0 +1,12 @@
+/**
+ * config.def
+ * 
+ * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
+ * SPDX-License-Identifier: MIT
+ */
+
+// name, default value
+#define CONFIG_KEYS \
+X(CONFIG_KEY_MQTT_BROKER,          "mqtt://mqtt.thingsboard.cloud") \
+X(CONFIG_KEY_MQTT_ACCESS_TOKEN,    "access_token") \
+X(CONFIG_KEY_NETWORK_AUTOCONNECT,  "true")

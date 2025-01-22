@@ -11,6 +11,7 @@
 #include "network_manager_menu.h"
 #include "datastream_menu.h"
 #include "rgb_led_menu.h"
+#include "config_menu.h"
 #include "console_windows.h"
 #include "esp_log.h"
 
@@ -33,6 +34,13 @@ static menu_item_t* show_rgb_led_menu(int argc, char* argv[])
     // switch menus
     rgb_led_menu_set_parent(main_menu);
     return rgb_led_menu(0, NULL);
+}
+
+static menu_item_t* show_config_menu(int argc, char* argv[])
+{
+    // switch menus
+    config_menu_set_parent(main_menu);
+    return config_menu(0, NULL);
 }
 
 static menu_item_t* set_log_level(int argc, char* argv[])
@@ -77,12 +85,19 @@ static menu_item_t menu_item_rgb_led = {
     .desc = "rgb_led submenu"
 };
 
+static menu_item_t menu_item_config = {
+    .func = show_config_menu,
+    .cmd  = "config",
+    .desc = "config submenu"
+};
+
 static menu_item_t* menu_item_list[] = 
 {
     &menu_item_set_log_level,
     &menu_item_network_manager,
     &menu_item_datastream,
     &menu_item_rgb_led,
+    &menu_item_config,
 };
 
 static void show_help(void)

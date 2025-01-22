@@ -11,6 +11,7 @@
 #include "console.h"
 #include "filesystem.h"
 #include "network_manager.h"
+#include "config.h"
 #include "terrapin.h"
 
 void app_main(void)
@@ -22,6 +23,9 @@ void app_main(void)
         ESP_LOGE(PROJECT_NAME, "filesystem_init() failed");        
         return;
     }
+
+    // initialize config module
+    config_init();
 
     // create the default event loop for system events
     esp_err_t esp_err = esp_event_loop_create_default();
