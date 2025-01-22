@@ -7,7 +7,9 @@
 
 #pragma once
 
-void mqtt_start(void);
+#include <stdbool.h>
+
+bool mqtt_start(void);
 void mqtt_stop(void);
 void mqtt_publish(const char* topic, const char* key, const char* val);
 void mqtt_subscribe(char* topic);

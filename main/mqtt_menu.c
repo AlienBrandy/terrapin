@@ -28,34 +28,6 @@ static menu_item_t* stop_client(int argc, char* argv[])
     return NULL;
 }
 
-static menu_item_t* set_broker(int argc, char* argv[])
-{
-    if (argc < 2)
-    {
-        console_windows_printf(MENU_WINDOW, "set_broker: missing param(s)\n");
-        return NULL;
-    }
-    char* broker = argv[1];
-
-    console_windows_printf(MENU_WINDOW, "setting mqtt broker to %s...\n", broker);
-    console_windows_printf(MENU_WINDOW, "mqtt_set_broker: %s\n", "not implemented");
-    return NULL;
-}
-
-static menu_item_t* set_token(int argc, char* argv[])
-{
-    if (argc < 2)
-    {
-        console_windows_printf(MENU_WINDOW, "set_token: missing param(s)\n");
-        return NULL;
-    }
-    char* token = argv[1];
-
-    console_windows_printf(MENU_WINDOW, "setting mqtt access token to %s...\n", token);
-    console_windows_printf(MENU_WINDOW, "mqtt_set_token: %s\n", "not implemented");
-    return NULL;
-}
-
 static menu_item_t* publish(int argc, char* argv[])
 {
     if (argc < 4)
@@ -121,18 +93,6 @@ static menu_item_t menu_item_stop_client = {
     .desc = "stop mqtt client"
 };
 
-static menu_item_t menu_item_set_broker = {
-    .func = set_broker,
-    .cmd  = "broker",
-    .desc = "set mqtt broker to <URI>"
-};
-
-static menu_item_t menu_item_set_token = {
-    .func = set_token,
-    .cmd  = "token",
-    .desc = "set mqtt access token to <token>"
-};
-
 static menu_item_t menu_item_publish = {
     .func = publish,
     .cmd  = "publish",
@@ -150,8 +110,6 @@ static menu_item_t* menu_item_list[] =
     &menu_item_exit,
     &menu_item_start_client,
     &menu_item_stop_client,
-    &menu_item_set_broker,
-    &menu_item_set_token,
     &menu_item_publish,
     &menu_item_subscribe,
 };
