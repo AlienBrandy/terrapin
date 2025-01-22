@@ -59,7 +59,7 @@ static menu_item_t* update_by_name(int argc, char* argv[])
     return NULL;
 }
 
-static menu_item_t* exit_datastream_menu(int argc, char* argv[])
+static menu_item_t* exit_menu(int argc, char* argv[])
 {
     if (parent_menu == NULL)
     {
@@ -75,9 +75,9 @@ static menu_item_t menu_item_datastream = {
 };
 
 static menu_item_t menu_item_exit = {
-    .func = exit_datastream_menu,
-    .cmd  = "exit",
-    .desc = "exit datastream menu"
+    .func = exit_menu,
+    .cmd  = "prev",
+    .desc = "previous menu"
 };
 
 static menu_item_t menu_item_show = {
@@ -108,8 +108,7 @@ static menu_item_t* menu_item_list[] =
 
 static void show_help(void)
 {
-    console_windows_printf(MENU_WINDOW, "\ndatastream menu\n");
-
+    PRINT_MENU_TITLE("Datastreams");
     static const int list_length = sizeof(menu_item_list) / sizeof(menu_item_list[0]);
     for (int i = 0; i < list_length; i++)
     {

@@ -77,7 +77,7 @@ static menu_item_t* show_current_state(int argc, char* argv[])
     return NULL;
 }
 
-static menu_item_t* exit_network_manager_menu(int argc, char* argv[])
+static menu_item_t* exit_menu(int argc, char* argv[])
 {
     if (parent_menu == NULL)
     {
@@ -93,9 +93,9 @@ static menu_item_t menu_item_network_manager = {
 };
 
 static menu_item_t menu_item_exit = {
-    .func = exit_network_manager_menu,
-    .cmd  = "exit",
-    .desc = "exit network manager menu"
+    .func = exit_menu,
+    .cmd  = "prev",
+    .desc = "previous menu"
 };
 
 static menu_item_t menu_item_wifi = {
@@ -154,7 +154,7 @@ static menu_item_t* menu_item_list[] =
 
 static void show_help(void)
 {
-    console_windows_printf(MENU_WINDOW, "\nnetwork manager menu\n");
+    PRINT_MENU_TITLE("Network Manager");
     static const int list_length = sizeof(menu_item_list) / sizeof(menu_item_list[0]);
 
     for (int i = 0; i < list_length; i++)

@@ -41,6 +41,12 @@ typedef enum {
 #define MENU_WINDOW   CONSOLE_WINDOW_2
 #define LOG_WINDOW    CONSOLE_WINDOW_2
 
+#define ATTRIB_MENU_TITLE   "\x1b[1;36m"
+#define ATTRIB_RESET        "\x1b[0m"
+#define PRINT_MENU_TITLE(A) console_windows_printf(MENU_WINDOW, ATTRIB_MENU_TITLE "\n" A "\n" ATTRIB_RESET);
+
+
+
 void console_windows_init(void);
 void console_windows_update_size(void);
 void console_windows_get_size(int* rows, int* cols);

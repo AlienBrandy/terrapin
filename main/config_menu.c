@@ -71,8 +71,8 @@ static menu_item_t menu_item_config = {
 
 static menu_item_t menu_item_exit = {
     .func = exit_menu,
-    .cmd  = "exit",
-    .desc = "exit menu"
+    .cmd  = "prev",
+    .desc = "previous menu"
 };
 
 static menu_item_t menu_item_set = {
@@ -103,7 +103,7 @@ static menu_item_t* menu_item_list[] =
 
 static void show_help(void)
 {
-    console_windows_printf(MENU_WINDOW, "\nconfig menu\n");
+    PRINT_MENU_TITLE("Configs");
     static const int list_length = sizeof(menu_item_list) / sizeof(menu_item_list[0]);
 
     for (int i = 0; i < list_length; i++)

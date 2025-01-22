@@ -102,9 +102,7 @@ static menu_item_t* menu_item_list[] =
 
 static void show_help(void)
 {
-    // first item by convention is the name of the menu and gets unique formatting
-    console_windows_printf(MENU_WINDOW, "\nmain menu\n");
-
+    PRINT_MENU_TITLE("Main Menu");
     static const int list_length = sizeof(menu_item_list) / sizeof(menu_item_list[0]);
     for (int i = 0; i < list_length; i++)
     {

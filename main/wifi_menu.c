@@ -72,7 +72,7 @@ static menu_item_t* show_known_networks_menu(int argc, char* argv[])
     return known_networks_menu(0, NULL);
 }
 
-static menu_item_t* exit_wifi_menu(int argc, char* argv[])
+static menu_item_t* exit_menu(int argc, char* argv[])
 {
     if (parent_menu == NULL)
     {
@@ -88,9 +88,9 @@ static menu_item_t menu_item_wifi = {
 };
 
 static menu_item_t menu_item_exit = {
-    .func = exit_wifi_menu,
-    .cmd  = "exit",
-    .desc = "exit wifi menu"
+    .func = exit_menu,
+    .cmd  = "prev",
+    .desc = "previous menu"
 };
 
 static menu_item_t menu_item_scan_for_networks = {
@@ -128,7 +128,7 @@ static menu_item_t* menu_item_list[] =
 
 static void show_help(void)
 {
-    console_windows_printf(MENU_WINDOW, "\nwifi menu\n");
+    PRINT_MENU_TITLE("Wifi");
     static const int list_length = sizeof(menu_item_list) / sizeof(menu_item_list[0]);
 
     for (int i = 0; i < list_length; i++)
