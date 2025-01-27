@@ -12,7 +12,6 @@
 #include "linenoise_lite.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "filesystem.h"
 #include "console_windows.h"
 #include "menu.h"
 

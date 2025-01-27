@@ -19,6 +19,9 @@ typedef struct {
     char* val;
 } CONFIG_ENTRY_T;
 
+/**
+ * @brief global definition of all default config entries.
+ */
 static CONFIG_ENTRY_T default_configs[CONFIG_KEY_MAX] = 
 {
     #define X(A,B) [A].name = #A, [A].val = B,
@@ -26,8 +29,14 @@ static CONFIG_ENTRY_T default_configs[CONFIG_KEY_MAX] =
     #undef X
 };
 
+/**
+ * @brief storage reserved for config values
+ */
 static char value_store[CONFIG_KEY_MAX][CONFIG_VALUE_MAX_BYTES];
 
+/**
+ * @brief global definition of all configs entries
+ */
 static CONFIG_ENTRY_T configs[CONFIG_KEY_MAX] = 
 {
     #define X(A,B) [A].name = #A, [A].val = value_store[A],

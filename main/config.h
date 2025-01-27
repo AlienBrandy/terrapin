@@ -53,7 +53,7 @@ bool config_set(CONFIG_KEY_T key, const char* value);
  * @brief retrieve a configuration setting.
  * 
  * @param key the setting to retrieve.
- * @param value receives the value associated with the key.
+ * @param value receives a pointer to the string associated with the key.
  * @returns true if setting was retrieved, false otherwise.
  */
 bool config_get(CONFIG_KEY_T key, const char** value);

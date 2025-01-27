@@ -26,7 +26,7 @@ static void fill_network_list_from_file(void)
 
     // read one line at a time from file into a buffer
     #define BUF_SIZE sizeof(known_network_entry_t)
-    static char buf[BUF_SIZE];
+    char buf[BUF_SIZE];
     while (fgets(buf, BUF_SIZE, fp) && (num_networks < KNOWN_NETWORKS_MAX_ENTRIES))
     {
         static const char *delims = ",\n";

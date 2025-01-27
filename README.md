@@ -77,7 +77,7 @@ Some notes on the structure of an ESP-IDF project
   - ninja to build project
   - esptool.py for flashing project
 - change to project directory  
-`cd ~/projects/esp32/blink`  
+`cd ~/projects/esp32/terrapin`  
 - set environment variables  
   `. ~/esp/v5.1-rc2/esp-idf/export.sh`
 - configure project  

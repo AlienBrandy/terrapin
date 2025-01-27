@@ -60,8 +60,8 @@ typedef struct {
  * Datastreams are identified by an index parameter passed to these read/write methods.
  * The index of each datastream is equivalent to it's position in the datastream_array
  * list. An enumeration of datastreams by index should be defined in a public header
- * for use by other modules. The size of the list is provided in another parameter and
- * used as a guard against overrunning the list.
+ * for use by other modules. The size of the datastream_array must be provided to guard
+ * against overrunning the list.
  * 
  * @param datastream_array a list of datastreams known to the system
  * @param array_entries the number of entries in the list

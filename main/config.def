@@ -7,7 +7,7 @@
 
 // name, default value
 #define CONFIG_KEYS \
+X(CONFIG_KEY_MQTT_ENABLE,          "true") \
 X(CONFIG_KEY_MQTT_BROKER,          "mqtt://mqtt.thingsboard.cloud") \
 X(CONFIG_KEY_MQTT_ACCESS_TOKEN,    "access_token") \
-X(CONFIG_KEY_MQTT_ENABLE,          "true") \
 X(CONFIG_KEY_NETWORK_AUTOCONNECT,  "true")

@@ -63,8 +63,8 @@ static menu_item_t menu_item_main = {
 
 static menu_item_t menu_item_set_log_level = {
     .func = set_log_level,
-    .cmd  = "log_level",
-    .desc = "set logging to <level> (0:none thru 5:verbose)"
+    .cmd  = "log",
+    .desc = "set log level to <0:none thru 5:verbose>"
 };
 
 static menu_item_t menu_item_network_manager = {
