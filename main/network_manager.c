@@ -111,6 +111,21 @@ static void state_uninitialized(state_machine_message_t* message)
                 return;
             }
 
+            // initialize mqtt client
+            if (config_get_boolean(CONFIG_KEY_MQTT_ENABLE))
+            {
+                if (!mqtt_init())
+                {
+                    send_reply(message, NETWORK_MANAGER_ERR_INITIALIZATION_FAILED);
+                    return;
+                }
+                if (!mqtt_start())
+                {
+                    send_reply(message, NETWORK_MANAGER_ERR_INITIALIZATION_FAILED);
+                    return;
+                }
+            }
+
             // initialization complete
             state_machine_set_state(me.state_machine, state_not_connected);
             send_reply(message, NETWORK_MANAGER_ERR_NONE);
@@ -138,7 +153,6 @@ void state_not_connected(state_machine_message_t* message)
         case SIGNAL_ENTRY:
         {
             me.current_state = "NOT_CONNECTED";
-
             return;
         }
         case SIGNAL_EXIT:
@@ -347,15 +361,10 @@ void state_connected(state_machine_message_t* message)
         case SIGNAL_ENTRY:
         {
             me.current_state = "CONNECTED";
-            if (config_get_boolean(CONFIG_KEY_MQTT_ENABLE))
-            {
-                mqtt_start();
-            }
             return;
         }
         case SIGNAL_EXIT:
         {
-            mqtt_stop();
             return;
         }
         case SIGNAL_CONNECT:

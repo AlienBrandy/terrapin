@@ -13,18 +13,27 @@
 
 static menu_function_t parent_menu = NULL;
 
+static menu_item_t* init(int argc, char* argv[])
+{
+    console_windows_printf(MENU_WINDOW, "initializing mqtt module...\n");
+    bool retc = mqtt_init();
+    console_windows_printf(MENU_WINDOW, "mqtt_init: %s\n", retc ? "No error" : "Failed");
+    return NULL;
+}
+
 static menu_item_t* start_client(int argc, char* argv[])
 {
     console_windows_printf(MENU_WINDOW, "starting mqtt client...\n");
-    mqtt_start();
-    console_windows_printf(MENU_WINDOW, "mqtt_start: %s\n", "No error");
+    bool retc = mqtt_start();
+    console_windows_printf(MENU_WINDOW, "mqtt_start: %s\n", retc ? "No error" : "Failed");
     return NULL;
 }
 
 static menu_item_t* stop_client(int argc, char* argv[])
 {
     console_windows_printf(MENU_WINDOW, "stopping mqtt client...\n");
-    console_windows_printf(MENU_WINDOW, "mqtt_stop: %s\n", "not implemented");
+    mqtt_stop();
+    console_windows_printf(MENU_WINDOW, "mqtt_stop() called.\n");
     return NULL;
 }
 
@@ -41,7 +50,7 @@ static menu_item_t* publish(int argc, char* argv[])
 
     console_windows_printf(MENU_WINDOW, "publishing %s to %s/%s...\n", val, topic, key);
     mqtt_publish(topic, key, val);
-    console_windows_printf(MENU_WINDOW, "mqtt_publish: %s\n", "No error");
+    console_windows_printf(MENU_WINDOW, "mqtt_publish() called.\n");
     return NULL;
 }
 
@@ -56,7 +65,7 @@ static menu_item_t* subscribe(int argc, char* argv[])
 
     console_windows_printf(MENU_WINDOW, "subscribing to %s...\n", topic);
     mqtt_subscribe(topic);
-    console_windows_printf(MENU_WINDOW, "mqtt_subscribe: %s\n", "No error");
+    console_windows_printf(MENU_WINDOW, "mqtt_subscribe() called.\n");
     return NULL;
 }
 
@@ -81,13 +90,19 @@ static menu_item_t menu_item_exit = {
     .desc = "previous menu"
 };
 
-static menu_item_t menu_item_start_client = {
+static menu_item_t menu_item_init = {
+    .func = init,
+    .cmd  = "init",
+    .desc = "init mqtt module"
+};
+
+static menu_item_t menu_item_start = {
     .func = start_client,
     .cmd  = "start",
     .desc = "start mqtt client"
 };
 
-static menu_item_t menu_item_stop_client = {
+static menu_item_t menu_item_stop = {
     .func = stop_client,
     .cmd  = "stop",
     .desc = "stop mqtt client"
@@ -108,8 +123,9 @@ static menu_item_t menu_item_subscribe = {
 static menu_item_t* menu_item_list[] = 
 {
     &menu_item_exit,
-    &menu_item_start_client,
-    &menu_item_stop_client,
+    &menu_item_init,
+    &menu_item_start,
+    &menu_item_stop,
     &menu_item_publish,
     &menu_item_subscribe,
 };
