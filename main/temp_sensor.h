@@ -7,5 +7,4 @@
 
 #pragma once
 
-void temp_sensor_init(uint32_t datastream_index);
-float temp_sensor_get(void);
+void temp_sensor_init(void);

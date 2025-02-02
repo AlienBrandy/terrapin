@@ -16,8 +16,9 @@
 // Name                               Topic                             Units       Precision
 //
 #define DATASTREAM_LIST \
-X( TERRAPIN_AMBIENT_TEMPERATURE,      "v1/devices/me/telemetry",        "DegC",     2  )\
-X( TERRAPIN_AMBIENT_HUMIDITY,         "v1/devices/me/telemetry",        "%RH",      1  )\
+X( TERRAPIN_CPU_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
+X( TERRAPIN_CH1_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
+X( TERRAPIN_CH2_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
 X( TERRAPIN_RAM_UTILIZATION,          "v1/devices/me/telemetry",        "Bytes",    0  )\
 X( TERRAPIN_GPIO_38,                  "v1/devices/me/telemetry",        "",         0  )\
 X( TERRAPIN_RGB_LED,                  "v1/devices/me/telemetry",        "RGB",      0  )

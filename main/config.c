@@ -9,7 +9,7 @@
 #include "filesystem.h"
 #include "string.h"
 #include "esp_log.h"
-#include "sys/param.h"
+#include "min_max.h"
 
 #define CONFIG_PATH FILESYSTEM_MOUNT_PATH "/configs.csv"
 #define CONFIG_VALUE_MAX_BYTES 64
@@ -49,7 +49,7 @@ static void populate_from_defaults(void)
     for (int idx = 0; idx < CONFIG_KEY_MAX; idx++)
     {
         int length = strlen(default_configs[idx].val);
-        length = MIN(length, CONFIG_VALUE_MAX_BYTES);
+        length = min(length, CONFIG_VALUE_MAX_BYTES);
         strncpy(configs[idx].val, default_configs[idx].val, length);
     }
 }

@@ -137,7 +137,7 @@ bool terrapin_init(void)
     }
 
     // start the temp sensor task
-    temp_sensor_init(TERRAPIN_AMBIENT_TEMPERATURE);
+    temp_sensor_init();
 
     // initialize the LED module
     if (!rgb_led_init())
@@ -170,9 +170,19 @@ bool terrapin_init(void)
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for GPIO_38 failed.\n");
         return false;
     }
-    if (datastream_register_update_handler(TERRAPIN_AMBIENT_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
+    if (datastream_register_update_handler(TERRAPIN_CPU_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
     {
-        ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for AMBIENT_TEMPERATURE failed.\n");
+        ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for TERRAPIN_CPU_TEMPERATURE failed.\n");
+        return false;
+    }
+    if (datastream_register_update_handler(TERRAPIN_CH1_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
+    {
+        ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for TERRAPIN_CH1_TEMPERATURE failed.\n");
+        return false;
+    }
+    if (datastream_register_update_handler(TERRAPIN_CH2_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
+    {
+        ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for TERRAPIN_CH2_TEMPERATURE failed.\n");
         return false;
     }
 
