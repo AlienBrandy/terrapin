@@ -12,7 +12,7 @@
 #include "terrapin.def"
 
 /**
- * @brief datastream identifiers
+ * @brief terrapin datastream identifiers
  */
 typedef enum {
     #define X(NAME, TOPIC, UNITS, PRECISION) NAME,
@@ -20,6 +20,16 @@ typedef enum {
     #undef X
     TERRAPIN_DATASTREAM_IDX_MAX
 } DATASTREAM_ID_T;
+
+/**
+ * @brief terrapin config keys
+ */
+typedef enum {
+    #define X(A,B) A,
+    CONFIG_LIST
+    #undef X
+    TERRAPIN_CONFIG_IDX_MAX
+} CONFIG_ID_T;
 
 /**
  * @brief project-specific initialization

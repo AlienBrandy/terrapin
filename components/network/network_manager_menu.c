@@ -13,7 +13,6 @@
 #include "console_windows.h"
 #include "network_manager.h"
 #include "mqtt.h"
-#include "temp_sensor.h"
 
 static menu_function_t parent_menu = NULL;
 
@@ -34,7 +33,7 @@ static menu_item_t* show_mqtt_menu(int argc, char* argv[])
 static menu_item_t* initialize(int argc, char* argv[])
 {
     console_windows_printf(MENU_WINDOW, "initializing...\n");
-    NETWORK_MANAGER_ERR_T code = network_manager_init(WAIT);
+    NETWORK_MANAGER_ERR_T code = network_manager_init();
     console_windows_printf(MENU_WINDOW, "initialize: %s\n", network_manager_get_error_string(code));
     return NULL;
 }

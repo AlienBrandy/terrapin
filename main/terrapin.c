@@ -17,16 +17,27 @@
 #include "mqtt_client.h"
 #include "config.h"
 #include "jsmn.h"
+#include "network_manager.h"
 
 static bool mqtt_connected = false;
 
 /**
  * @brief list of terrapin datastreams
  */
-static datastream_t datastreams[TERRAPIN_DATASTREAM_IDX_MAX] =
+static datastream_t terrapin_datastreams[TERRAPIN_DATASTREAM_IDX_MAX] =
 {
-    #define X(NAME, TOPIC, UNITS, PRECISION) {.name = #NAME, .topic = TOPIC, .units = UNITS, .precision = PRECISION},
+    #define X(KEY, TOPIC, UNITS, PRECISION) [KEY].name = #KEY, [KEY].topic = TOPIC, [KEY].units = UNITS, [KEY].precision = PRECISION,
     DATASTREAM_LIST
+    #undef X
+};
+
+/**
+ * @brief list of terrapin configuration values
+ */
+static CONFIG_ENTRY_T terrapin_configs[TERRAPIN_CONFIG_IDX_MAX] = 
+{
+    #define X(KEY, VALUE) [KEY].name = #KEY, [KEY].val = VALUE,
+    CONFIG_LIST
     #undef X
 };
 
@@ -36,7 +47,7 @@ static datastream_t datastreams[TERRAPIN_DATASTREAM_IDX_MAX] =
 static void rgb_led_update_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
 {
     datastream_t ds;
-    datastream_get(TERRAPIN_RGB_LED, &ds);
+    datastream_get(DATASTREAM_RGB_LED, &ds);
     rgb_led_write(ds.value);
 }
 
@@ -46,7 +57,7 @@ static void rgb_led_update_handler(void* handler_args, esp_event_base_t base, in
 static void gpio38_update_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
 {
     datastream_t ds;
-    datastream_get(TERRAPIN_GPIO_38, &ds);
+    datastream_get(DATASTREAM_GPIO_38, &ds);
     gpio_set_level(GPIO_NUM_38, ds.value ? 1 : 0);
 }
 
@@ -129,10 +140,25 @@ static void attributes_handler(esp_mqtt_event_handle_t event)
 
 bool terrapin_init(void)
 {
+    // initialize config module
+    if (!config_init(terrapin_configs, TERRAPIN_CONFIG_IDX_MAX))
+    {
+        ESP_LOGE(PROJECT_NAME, "config_init() failed");
+        return false;
+    }
+
     // initialize datastream module
-    if (datastream_init(datastreams, TERRAPIN_DATASTREAM_IDX_MAX) != DATASTREAM_ERR_NONE)
+    if (datastream_init(terrapin_datastreams, TERRAPIN_DATASTREAM_IDX_MAX) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_init() failed");
+        return false;
+    }
+
+    // start network manager
+    NETWORK_MANAGER_ERR_T network_manager_err = network_manager_init();
+    if (network_manager_err != NETWORK_MANAGER_ERR_NONE)
+    {
+        ESP_LOGE(PROJECT_NAME, "network_manager_init() failed");
         return false;
     }
 
@@ -160,27 +186,27 @@ bool terrapin_init(void)
     }
 
     // register datastream update handlers
-    if (datastream_register_update_handler(TERRAPIN_RGB_LED, rgb_led_update_handler) != DATASTREAM_ERR_NONE)
+    if (datastream_register_update_handler(DATASTREAM_RGB_LED, rgb_led_update_handler) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for RGB_LED failed.\n");
         return false;
     }
-    if (datastream_register_update_handler(TERRAPIN_GPIO_38, gpio38_update_handler) != DATASTREAM_ERR_NONE)
+    if (datastream_register_update_handler(DATASTREAM_GPIO_38, gpio38_update_handler) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for GPIO_38 failed.\n");
         return false;
     }
-    if (datastream_register_update_handler(TERRAPIN_CPU_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
+    if (datastream_register_update_handler(DATASTREAM_CPU_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for TERRAPIN_CPU_TEMPERATURE failed.\n");
         return false;
     }
-    if (datastream_register_update_handler(TERRAPIN_CH1_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
+    if (datastream_register_update_handler(DATASTREAM_CH1_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for TERRAPIN_CH1_TEMPERATURE failed.\n");
         return false;
     }
-    if (datastream_register_update_handler(TERRAPIN_CH2_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
+    if (datastream_register_update_handler(DATASTREAM_CH2_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for TERRAPIN_CH2_TEMPERATURE failed.\n");
         return false;

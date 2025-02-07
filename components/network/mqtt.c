@@ -33,13 +33,6 @@ static const char* MQTT_PORT_TLS = "8883";
 
 static esp_mqtt_client_handle_t client = NULL;
 
-static void log_error_if_nonzero(const char *message, int error_code)
-{
-    if (error_code != 0) {
-        ESP_LOGE(PROJECT_NAME, "Last error %s: 0x%x", message, error_code);
-    }
-}
-
 bool mqtt_init(void)
 {
     if (client != NULL)
@@ -55,10 +48,10 @@ bool mqtt_init(void)
     esp_log_level_set("outbox", ESP_LOG_VERBOSE);
 
     // retrieve connection parameters from configs
-    const char* broker = NULL;
-    const char* access_token = NULL;
-    config_get(CONFIG_KEY_MQTT_BROKER, &broker);
-    config_get(CONFIG_KEY_MQTT_ACCESS_TOKEN, &access_token);
+    const char* broker = '\0';
+    const char* access_token = '\0';
+    config_get_value("CONFIG_MQTT_BROKER", &broker);
+    config_get_value("CONFIG_MQTT_ACCESS_TOKEN", &access_token);
 
     if (strlen(broker) == 0)
     {
@@ -124,14 +117,12 @@ void mqtt_publish_list(const char* topic, const char* keys[], const char* vals[]
     static const int JSON_STRING_MAX = 128;
     char data[JSON_STRING_MAX];
     int nWritten = snprintf(data, JSON_STRING_MAX, "{");
-    int nRemaining = JSON_STRING_MAX - nWritten;
 
     for (int i = 0; i < nPairs; i++)
     {
         if (i)
         {
             nWritten += snprintf(data + nWritten, JSON_STRING_MAX - nWritten, ",");
-            nRemaining = JSON_STRING_MAX - nWritten;
         }
         nWritten += snprintf(data + nWritten, JSON_STRING_MAX - nWritten, "\"%s\":", keys[i]);
         if (vals[i] != NULL)

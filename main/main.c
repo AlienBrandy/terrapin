@@ -13,6 +13,7 @@
 #include "network_manager.h"
 #include "config.h"
 #include "terrapin.h"
+#include "main_menu.h"
 
 void app_main(void)
 {
@@ -23,9 +24,6 @@ void app_main(void)
         ESP_LOGE(PROJECT_NAME, "filesystem_init() failed");        
         return;
     }
-
-    // initialize config module
-    config_init();
 
     // create the default event loop for system events
     esp_err_t esp_err = esp_event_loop_create_default();
@@ -44,18 +42,10 @@ void app_main(void)
     }
 
     // start debug console thread
-    console_err = console_start();
+    console_err = console_start(main_menu);
     if (console_err != CONSOLE_ERR_NONE)
     {
         ESP_LOGE(PROJECT_NAME, "console_start() failed");        
-        return;
-    }
-
-    // start network manager
-    NETWORK_MANAGER_ERR_T network_manager_err = network_manager_init(WAIT);
-    if (network_manager_err != NETWORK_MANAGER_ERR_NONE)
-    {
-        ESP_LOGE(PROJECT_NAME, "network_manager_init() failed");
         return;
     }
 

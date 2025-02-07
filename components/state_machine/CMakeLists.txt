@@ -1,5 +1,6 @@
-idf_component_register(SRCS  "jsmn.c" "main.c" "main_menu.c" "temp_sensor.c" "terrapin.c"
-                    INCLUDE_DIRS ".")
+idf_component_register(SRCS "state_machine.c"
+                       INCLUDE_DIRS "."
+                       REQUIRES)
 
 message("CMAKE_PROJECT_NAME = ${CMAKE_PROJECT_NAME}")
 message("COMPONENT_TARGET = ${COMPONENT_TARGET}")                 

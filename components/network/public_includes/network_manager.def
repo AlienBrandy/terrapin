@@ -12,4 +12,5 @@ X(NETWORK_MANAGER_ERR_NOT_INITIALIZED,          "Not initialized") \
 X(NETWORK_MANAGER_ERR_POST_FAILED,              "Post failed") \
 X(NETWORK_MANAGER_ERR_SCAN_FAILED,              "Scan failed") \
 X(NETWORK_MANAGER_ERR_CONNECT_FAILED,           "Connect failed") \
+X(NETWORK_MANAGER_ERR_MQTT_START_FAILED,        "MQTT start failed") \
 X(NETWORK_MANAGER_ERR_COMMAND_IGNORED,          "Command ignored")

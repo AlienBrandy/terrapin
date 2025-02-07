@@ -7,18 +7,32 @@
  */
 
 /**
- * @brief a list of data objects published for system-wide access
+ * @brief Terrapin datastream objects 
  *
- * these macro definitions should be expanded into an enumerated list in a public
- * header file, and also expanded to initialize an array of datastream objects
- * in an implementation file.
+ * these macro definitions will be expanded into an enumerated list in a public
+ * header file, and also expanded to initialize an array of datastream objects.
  */ 
-// Name                               Topic                             Units       Precision
+// Key                                  Topic                             Units       Precision
 //
 #define DATASTREAM_LIST \
-X( TERRAPIN_CPU_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
-X( TERRAPIN_CH1_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
-X( TERRAPIN_CH2_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
-X( TERRAPIN_RAM_UTILIZATION,          "v1/devices/me/telemetry",        "Bytes",    0  )\
-X( TERRAPIN_GPIO_38,                  "v1/devices/me/telemetry",        "",         0  )\
-X( TERRAPIN_RGB_LED,                  "v1/devices/me/telemetry",        "RGB",      0  )
+X( DATASTREAM_CPU_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
+X( DATASTREAM_CH1_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
+X( DATASTREAM_CH2_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
+X( DATASTREAM_RAM_UTILIZATION,          "v1/devices/me/telemetry",        "Bytes",    0  )\
+X( DATASTREAM_GPIO_38,                  "v1/devices/me/telemetry",        "",         0  )\
+X( DATASTREAM_RGB_LED,                  "v1/devices/me/telemetry",        "RGB",      0  )
+
+
+/**
+ * @brief Terrapin configuration values
+ *
+ * these macro definitions will be expanded into an enumerated list in a public
+ * header file, and also expanded to initialize an array of char pointers.
+ */ 
+// Key                                  Default Value
+//
+#define CONFIG_LIST \
+X( CONFIG_MQTT_ENABLE,                  "true"                          ) \
+X( CONFIG_MQTT_BROKER,                  "mqtt://mqtt.thingsboard.cloud" ) \
+X( CONFIG_MQTT_ACCESS_TOKEN,            "access_token"                  ) \
+X( CONFIG_NETWORK_AUTOCONNECT,          "true"                          )

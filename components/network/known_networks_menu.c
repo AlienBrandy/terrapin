@@ -86,7 +86,7 @@ static menu_item_t* show_all(int argc, char* argv[])
     return NULL;
 }
 
-static menu_item_t* exit_known_networks_menu(int argc, char* argv[])
+static menu_item_t* exit_menu(int argc, char* argv[])
 {
     if (parent_menu == NULL)
     {
@@ -102,9 +102,9 @@ static menu_item_t menu_item_known_networks = {
 };
 
 static menu_item_t menu_item_exit = {
-    .func = exit_known_networks_menu,
-    .cmd  = "exit",
-    .desc = "exit known networks menu"
+    .func = exit_menu,
+    .cmd  = "prev",
+    .desc = "prev menu"
 };
 
 static menu_item_t menu_item_add = {

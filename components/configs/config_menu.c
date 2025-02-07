@@ -21,11 +21,9 @@ static menu_item_t* set(int argc, char* argv[])
         return NULL;
     }
 
-    int   key = atoi(argv[1]);
+    char* key = argv[1];
     char* val = argv[2];
-
-    const char* name = config_get_name(key);
-    console_windows_printf(MENU_WINDOW, "setting %s to %s...\n", name, val);
+    console_windows_printf(MENU_WINDOW, "setting %s to %s...\n", key, val);
     bool retc = config_set(key, val);
     console_windows_printf(MENU_WINDOW, "set: %s\n", retc ? "No error" : "Failed.");
     return NULL;
@@ -35,22 +33,22 @@ static menu_item_t* show(int argc, char* argv[])
 {
     console_windows_printf(MENU_WINDOW, "\nidx key                              value\n");
     console_windows_printf(MENU_WINDOW, "--- -------------------------------- ---------------------------------\n");
-    for (int idx = 0; idx < CONFIG_KEY_MAX; idx++)
+    int idx = 0;
+    while (1)
     {
-        const char* key = config_get_name(idx);
-        const char* value;
-        config_get(idx, &value);
-        console_windows_printf(MENU_WINDOW, "%03d %-32.32s %-32.32s\n", idx, key, value);
+        const char* key = config_get_key(idx++);
+        if (key)
+        {
+            const char* value;
+            config_get_value(key, &value);
+            console_windows_printf(MENU_WINDOW, "%03d %-32.32s %-32.32s\n", idx, key, value);
+        }
+        else
+        {
+            console_windows_printf(MENU_WINDOW, "\n");
+            break;
+        }
     }
-    console_windows_printf(MENU_WINDOW, "\n");
-
-    return NULL;
-}
-
-static menu_item_t* init(int argc, char* argv[])
-{
-    config_init();
-    console_windows_printf(MENU_WINDOW, "called config_init().\n");
     return NULL;
 }
 
@@ -78,7 +76,7 @@ static menu_item_t menu_item_exit = {
 static menu_item_t menu_item_set = {
     .func = set,
     .cmd  = "set",
-    .desc = "set config <key index> to <value>"
+    .desc = "set config <key> to <value>"
 };
 
 static menu_item_t menu_item_show = {
@@ -87,16 +85,9 @@ static menu_item_t menu_item_show = {
     .desc = "show all configs"
 };
 
-static menu_item_t menu_item_init = {
-    .func = init,
-    .cmd  = "init",
-    .desc = "initialize config module"
-};
-
 static menu_item_t* menu_item_list[] = 
 {
     &menu_item_exit,
-    &menu_item_init,
     &menu_item_show,
     &menu_item_set,
 };

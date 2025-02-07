@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include "menu.h"
+
 typedef enum {
     CONSOLE_ERR_NONE,
     CONSOLE_ERR_PROMPT_INIT_FAIL,
@@ -37,4 +39,4 @@ typedef enum {
 } CONSOLE_ERR_T;
 
 CONSOLE_ERR_T console_init(void);
-CONSOLE_ERR_T console_start(void);
+CONSOLE_ERR_T console_start(menu_function_t top_menu);

@@ -42,18 +42,18 @@ static void temp_sensor_task(void* args)
         float cpu_temp = 0;
         if (temperature_sensor_get_celsius(temp_sensor, &cpu_temp) == ESP_OK)
         {
-            datastream_update(TERRAPIN_CPU_TEMPERATURE, cpu_temp);
+            datastream_update(DATASTREAM_CPU_TEMPERATURE, cpu_temp);
         }
         int adc_raw = 0;
         if (adc_oneshot_read(adc1_handle, ADC_CHANNEL_3, &adc_raw) == ESP_OK)
         {
             float adc_temp = calc_temperature(adc_raw);
-            datastream_update(TERRAPIN_CH1_TEMPERATURE, adc_temp);
+            datastream_update(DATASTREAM_CH1_TEMPERATURE, adc_temp);
         }
         if (adc_oneshot_read(adc1_handle, ADC_CHANNEL_4, &adc_raw) == ESP_OK)
         {
             float adc_temp = calc_temperature(adc_raw);
-            datastream_update(TERRAPIN_CH2_TEMPERATURE, adc_temp);
+            datastream_update(DATASTREAM_CH2_TEMPERATURE, adc_temp);
         }
 
         vTaskDelay(1000 / portTICK_PERIOD_MS);

@@ -4,8 +4,8 @@
  * Ciruclar buffer supporting variable length records.
  * This implementation of a ring buffer is designed for situations where records may
  * be different length, and the storage overhead of tracking record length and offset
- * is less than the memory potentially wasted by defining a fixed entry size to hold
- * the largest possible record.
+ * is less than the memory potentially wasted by using a buffer with a fixed entry size
+ * to hold the largest possible record.
  * 
  * This implementation utilizes a linked-list, in which a header preceeding every 
  * record contains the pointers to the previous and next records as well as the size

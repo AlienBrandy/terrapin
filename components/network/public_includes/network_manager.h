@@ -22,7 +22,7 @@ typedef enum {
 #define WAIT true
 #define NOWAIT false
 
-NETWORK_MANAGER_ERR_T network_manager_init(bool wait);
+NETWORK_MANAGER_ERR_T network_manager_init(void);
 NETWORK_MANAGER_ERR_T network_manager_connect(bool wait);
 NETWORK_MANAGER_ERR_T network_manager_connect_to(char* ssid, char* pwd, bool wait);
 NETWORK_MANAGER_ERR_T network_manager_disconnect(bool wait);

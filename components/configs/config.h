@@ -19,18 +19,15 @@
  */
 
 #pragma once
-#include "config.def"
 #include <stdbool.h>
 
 /**
- * @brief config keys
+ * @brief a configuration entry
  */
-typedef enum {
-    #define X(A,B) A,
-    CONFIG_KEYS
-    #undef X
-    CONFIG_KEY_MAX
-} CONFIG_KEY_T;
+typedef struct {
+    char* name;
+    char* val;
+} CONFIG_ENTRY_T;
 
 /**
  * @brief initialize the config module.
@@ -38,7 +35,7 @@ typedef enum {
  * Call this before using any other API method. Config values are
  * populated from non-volatile storage.
  */
-void config_init(void);
+bool config_init(CONFIG_ENTRY_T* configs, int nConfigs);
 
 /**
  * @brief change a configuration setting.
@@ -47,7 +44,7 @@ void config_init(void);
  * @param value the new value, restricted to the max size of a value string.
  * @returns true of the new setting was recorded, false otherwise.
  */
-bool config_set(CONFIG_KEY_T key, const char* value);
+bool config_set(const char* key, const char* value);
 
 /**
  * @brief retrieve a configuration setting.
@@ -56,7 +53,7 @@ bool config_set(CONFIG_KEY_T key, const char* value);
  * @param value receives a pointer to the string associated with the key.
  * @returns true if setting was retrieved, false otherwise.
  */
-bool config_get(CONFIG_KEY_T key, const char** value);
+bool config_get_value(const char* key, const char** value);
 
 /**
  * @brief retrieve a boolean configuration setting.
@@ -65,11 +62,12 @@ bool config_get(CONFIG_KEY_T key, const char** value);
  * @returns the value interpreted as a boolean datatype. Return code is true
  * if the value begins with '1', 't', or 'T'. Method returns false otherwise.
  */
-bool config_get_boolean(CONFIG_KEY_T key);
+bool config_get_boolean(const char* key);
 
 /**
- * @brief retrieve the name associated with the configuration setting.
+ * @brief retrieve the key of the config entry with the given index.
  * 
- * @param key the config setting to retrieve the name of
+ * @param index the config index
+ * @returns the name associated with the given index, or NULL if index is invalid.
  */
-const char* config_get_name(CONFIG_KEY_T key);
+const char* config_get_key(int index);
