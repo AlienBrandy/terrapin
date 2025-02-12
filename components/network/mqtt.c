@@ -50,7 +50,7 @@ bool mqtt_init(void)
     // retrieve connection parameters from configs
     const char* broker = '\0';
     const char* access_token = '\0';
-    config_get_value("CONFIG_MQTT_BROKER", &broker);
+    config_get_value("CONFIG_MQTT_BROKER_URI", &broker);
     config_get_value("CONFIG_MQTT_ACCESS_TOKEN", &access_token);
 
     if (strlen(broker) == 0)
