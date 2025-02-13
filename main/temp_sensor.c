@@ -19,9 +19,20 @@
 static temperature_sensor_handle_t temp_sensor = NULL;
 static adc_oneshot_unit_handle_t adc1_handle = NULL;
 
+/**
+ * @brief ADC channel assignments for each temp sensor 
+ * 
+ * ADC 1, channel 4 is inoperable on this silicon, per espressif errata
+ * https://docs.espressif.com/projects/esp-chip-errata/en/latest/esp32h2/03-errata-description/index.html#id4
+ * 
+ */
+static const adc_channel_t TEMP_SENSOR_1_ADC_CHANNEL = ADC_CHANNEL_3;
+static const adc_channel_t TEMP_SENSOR_2_ADC_CHANNEL = ADC_CHANNEL_5;
+static const adc_channel_t TEMP_SENSOR_3_ADC_CHANNEL = ADC_CHANNEL_6;
+
 static float calc_temperature(uint32_t adc_raw)
 {
-    static const float BETA = 3375.0;
+    static const float BETA = 3950.0;
     static const float NOMINAL_R_OHMS = 10000.0;
     static const float NOMINAL_TEMP_KELVIN = 25.0 + 273.15;
     static const float ADC_RAW_MAX = 4095.0;
@@ -45,15 +56,20 @@ static void temp_sensor_task(void* args)
             datastream_update(DATASTREAM_CPU_TEMPERATURE, cpu_temp);
         }
         int adc_raw = 0;
-        if (adc_oneshot_read(adc1_handle, ADC_CHANNEL_3, &adc_raw) == ESP_OK)
+        if (adc_oneshot_read(adc1_handle, TEMP_SENSOR_1_ADC_CHANNEL, &adc_raw) == ESP_OK)
         {
             float adc_temp = calc_temperature(adc_raw);
             datastream_update(DATASTREAM_CH1_TEMPERATURE, adc_temp);
         }
-        if (adc_oneshot_read(adc1_handle, ADC_CHANNEL_4, &adc_raw) == ESP_OK)
+        if (adc_oneshot_read(adc1_handle, TEMP_SENSOR_2_ADC_CHANNEL, &adc_raw) == ESP_OK)
         {
             float adc_temp = calc_temperature(adc_raw);
             datastream_update(DATASTREAM_CH2_TEMPERATURE, adc_temp);
+        }
+        if (adc_oneshot_read(adc1_handle, TEMP_SENSOR_3_ADC_CHANNEL, &adc_raw) == ESP_OK)
+        {
+            float adc_temp = calc_temperature(adc_raw);
+            datastream_update(DATASTREAM_CH3_TEMPERATURE, adc_temp);
         }
 
         vTaskDelay(1000 / portTICK_PERIOD_MS);
@@ -79,8 +95,9 @@ void temp_sensor_init(void)
         .bitwidth = ADC_BITWIDTH_DEFAULT,
         .atten = ADC_ATTEN_DB_11,
     };
-    adc_oneshot_config_channel(adc1_handle, ADC_CHANNEL_3, &config);
-    adc_oneshot_config_channel(adc1_handle, ADC_CHANNEL_4, &config);
+    adc_oneshot_config_channel(adc1_handle, TEMP_SENSOR_1_ADC_CHANNEL, &config);
+    adc_oneshot_config_channel(adc1_handle, TEMP_SENSOR_2_ADC_CHANNEL, &config);
+    adc_oneshot_config_channel(adc1_handle, TEMP_SENSOR_3_ADC_CHANNEL, &config);
 
     // create thread
     static const uint32_t TEMP_SENSOR_TASK_STACK_DEPTH_BYTES = 4096;

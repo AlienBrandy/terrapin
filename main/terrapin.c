@@ -211,6 +211,11 @@ bool terrapin_init(void)
         ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for TERRAPIN_CH2_TEMPERATURE failed.\n");
         return false;
     }
+    if (datastream_register_update_handler(DATASTREAM_CH3_TEMPERATURE, telemetry_update_handler) != DATASTREAM_ERR_NONE)
+    {
+        ESP_LOGE(PROJECT_NAME, "datastream_register_update_handler for TERRAPIN_CH3_TEMPERATURE failed.\n");
+        return false;
+    }
 
     return true;
 }

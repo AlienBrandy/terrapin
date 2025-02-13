@@ -18,6 +18,7 @@
 X( DATASTREAM_CPU_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
 X( DATASTREAM_CH1_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
 X( DATASTREAM_CH2_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
+X( DATASTREAM_CH3_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
 X( DATASTREAM_RAM_UTILIZATION,          "v1/devices/me/telemetry",        "Bytes",    0  )\
 X( DATASTREAM_GPIO_38,                  "v1/devices/me/telemetry",        "",         0  )\
 X( DATASTREAM_RGB_LED,                  "v1/devices/me/telemetry",        "RGB",      0  )
