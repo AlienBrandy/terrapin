@@ -67,7 +67,7 @@ static void gpio38_update_handler(void* handler_args, esp_event_base_t base, int
 static void telemetry_update_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
 {
     static const char* topic = "v1/devices/me/telemetry";
-    
+
     if (!mqtt_connected)
     {
         return;
@@ -112,7 +112,7 @@ static void rpc_handler(esp_mqtt_event_handle_t event)
     if (nTokens != 5)
     {
         ESP_LOGI(PROJECT_NAME, "rpc_handler(): invalid request format, tokens = %d", nTokens);
-        mqtt_publish(response_topic, "Result", "Error");
+        mqtt_publish(response_topic, "result", "invalid request format");
         return;
     }
     char key[20] = {0};
@@ -122,7 +122,9 @@ static void rpc_handler(esp_mqtt_event_handle_t event)
 
     // update datastream
     double dval = atof(val);
-    bool retc = datastream_update_by_name(key, dval) == DATASTREAM_ERR_NONE;
+    DATASTREAM_ERR_T retc = datastream_update_by_name(key, dval);
+    char result[20] = {0};
+    snprintf(result, 20, "%d", retc);
 
     // format reply
     static const char* keys[2];
@@ -130,7 +132,7 @@ static void rpc_handler(esp_mqtt_event_handle_t event)
     keys[0] = key;
     vals[0] = val;
     keys[1] = "result";
-    vals[1] = retc ? "Success" : "Error";
+    vals[1] = result;
 
     mqtt_publish_list(response_topic, keys, vals, 2);
 }
