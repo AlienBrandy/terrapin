@@ -78,7 +78,7 @@ static menu_item_t* exit_menu(int argc, char* argv[])
     return parent_menu(0, NULL);
 }
 
-static menu_item_t menu_item_cloud = {
+static menu_item_t menu_item_mqtt = {
     .func = mqtt_menu,
     .cmd  = "",
     .desc = ""
@@ -147,7 +147,7 @@ menu_item_t* mqtt_menu(int argc, char* argv[])
     if (argc == 0 || argv == NULL)
     {
         show_help();
-        return &menu_item_cloud;
+        return &menu_item_mqtt;
     }
 
     // search for matching command in list of registered menu items

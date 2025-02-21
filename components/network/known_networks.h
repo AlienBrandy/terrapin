@@ -1,6 +1,13 @@
 /**
  * known_networks.h
  * 
+ * This module uses non-volatile storage to maintain a list of wifi network SSIDs and passwords.
+ * New entries can be added, existing entries can be removed, and the list can be queried. Once 
+ * the list is full, new entries will replace the oldest ones. The list is saved to non-volatile
+ * storage after each change.
+ * 
+ * When used with the wifi module, the list can be used to automatically connect to known networks.
+ * 
  * SPDX-FileCopyrightText: Copyright © 2024 Honulanding Software <dev@honulanding.com>
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -18,6 +25,9 @@
  */
 #define KNOWN_NETWORKS_MOUNT_PATH "/networks"
 
+/**
+ * @brief an entry in the list of known networks
+ */
 typedef struct {
     char ssid[KNOWN_NETWORKS_MAX_SSID];
     char pwd[KNOWN_NETWORKS_MAX_PWD];

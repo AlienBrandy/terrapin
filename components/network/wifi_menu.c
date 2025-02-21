@@ -60,8 +60,8 @@ static menu_item_t* connect(int argc, char* argv[])
 static menu_item_t* disconnect(int argc, char* argv[])
 {
     console_windows_printf(MENU_WINDOW, "disconnecting...\n");
-    WIFI_ERR_T code = wifi_disconnect();
-    console_windows_printf(MENU_WINDOW, "disconnect: %s\n", wifi_get_error_string(code));
+    wifi_disconnect();
+    console_windows_printf(MENU_WINDOW, "called wifi_disconnect().\n");
     return NULL;
 }
 

@@ -13,9 +13,6 @@
 #include "esp_vfs.h"
 #include "esp_vfs_fat.h"
 
-/**
- * 
- */
 static bool initialize_nvs(void)
 {
     esp_err_t err = nvs_flash_init();
@@ -44,14 +41,11 @@ static bool initialize_nvs(void)
     return true;
 }
 
-/**
- * 
- */
-static bool initialize_filesystem(void)
+static bool initialize_fat(void)
 {
     static wl_handle_t wl_handle;
     const esp_vfs_fat_mount_config_t mount_config = {
-            .max_files = 4,
+            .max_files = 4, // max number of files that can be open at the same time
             .format_if_mount_failed = true
     };
 
@@ -62,7 +56,6 @@ static bool initialize_filesystem(void)
         return false;
     }
 
-    ESP_LOGI(PROJECT_NAME, "Filesystem initialized");
     return true;
 }
 
@@ -71,8 +64,9 @@ FILESYSTEM_ERR_T filesystem_init(void)
     if (!initialize_nvs())
         return FILESYSTEM_ERR_INIT_NVS_FAILED;
 
-    if (!initialize_filesystem())
+    if (!initialize_fat())
         return FILESYSTEM_ERR_INIT_FS_FAILED;        
 
+    ESP_LOGI(PROJECT_NAME, "Filesystem: initialized");
     return FILESYSTEM_ERR_NONE;
 }

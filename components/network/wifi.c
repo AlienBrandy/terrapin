@@ -189,9 +189,13 @@ WIFI_ERR_T wifi_connect(const char* ssid, const char* password, uint32_t timeout
     return WIFI_ERR_CONNECTION_TIMEOUT;
 }
 
-WIFI_ERR_T wifi_disconnect(void)
+void wifi_disconnect(void)
 {
-    return esp_wifi_disconnect();
+    esp_err_t retc = esp_wifi_disconnect();
+    if (retc != ESP_OK)
+    {
+        ESP_LOGW("wifi", "esp_wifi_disconnect failed: %d\n", retc);
+    }
 }
 
 const char* wifi_get_error_string(WIFI_ERR_T code)

@@ -34,6 +34,23 @@
 
 #include <stdint.h>
 
+/**
+ * @brief initialize the communication interface with the RGB LED.
+ * 
+ * Call this function once at startup before attempting to write to the LED.
+ * 
+ * @returns true if the LED was successfully initialized, false otherwise
+ */
 bool rgb_led_init(void);
-bool rgb_led_write(uint32_t RGB);
 
+/**
+ * @brief write a new RGB value to the LED.
+ * 
+ * The RGB value is a 24-bit integer with the red, green, and blue components packed into
+ * the least significant bytes of the unsigned int. The LED will immediately change to the
+ * new color when this function is called.
+ * 
+ * @param RGB the new color value.
+ * @returns true if the LED was successfully written, false otherwise.
+ */
+bool rgb_led_write(uint32_t RGB);

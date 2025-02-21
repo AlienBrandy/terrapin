@@ -64,7 +64,7 @@ typedef struct {
  * 
  * @param datastream_array a list of datastreams known to the system
  * @param array_entries the number of entries in the list
- * @returns true if the datastream module was successfully initialized
+ * @returns DATASTREAM_ERR_NONE if the datastream module was successfully initialized
  */
 DATASTREAM_ERR_T datastream_init(datastream_t* datastream_array, uint32_t array_entries);
 
@@ -77,7 +77,7 @@ DATASTREAM_ERR_T datastream_init(datastream_t* datastream_array, uint32_t array_
  * 
  * @param datastream_id the index of the datastream to update
  * @param value the value to write
- * @returns true if the datatstream was successfully updated 
+ * @returns DATASTREAM_ERR_NONE if the datatstream was successfully updated 
  */
 DATASTREAM_ERR_T datastream_update(uint32_t datastream_id, double val);
 
@@ -90,7 +90,7 @@ DATASTREAM_ERR_T datastream_update(uint32_t datastream_id, double val);
  * 
  * @param datastream_name the name of the datastream to update
  * @param value the value to write
- * @returns true if the datatstream was successfully updated 
+ * @returns DATASTREAM_ERR_NONE if the datatstream was successfully updated 
  */
 DATASTREAM_ERR_T datastream_update_by_name(const char* datastream_name, double value);
 
@@ -99,7 +99,7 @@ DATASTREAM_ERR_T datastream_update_by_name(const char* datastream_name, double v
  * 
  * @param datastream_id the index of the datastream to fetch
  * @param datastram receives the datastream
- * @returns true if the datastream was successfully returned
+ * @returns DATASTREAM_ERR_NONE if the datastream was successfully returned
  */
 DATASTREAM_ERR_T datastream_get(uint32_t datastream_id, datastream_t* datastream);
 
@@ -113,7 +113,7 @@ DATASTREAM_ERR_T datastream_get(uint32_t datastream_id, datastream_t* datastream
  * 
  * @param datastream_id the index of the datastream to monitor
  * @param handler the callback function to run when the datastream is updated
- * @returns true if handler is successfully registered
+ * @returns DATASTREAM_ERR_NONE if handler is successfully registered
  */
 DATASTREAM_ERR_T datastream_register_update_handler(uint32_t datastream_id, esp_event_handler_t handler);
 

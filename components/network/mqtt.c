@@ -104,8 +104,8 @@ void mqtt_publish(const char* topic, const char* key, const char* val)
     static const int JSON_STRING_MAX = 128;
     char data[JSON_STRING_MAX];
     snprintf(data, JSON_STRING_MAX, "{\"%s\":\"%s\"}", key, val);
-    ESP_LOGI(PROJECT_NAME, "publishing %s to %s", data, topic);
-    esp_mqtt_client_publish(client, topic, data, 0, 1, 0);
+    int message_id = esp_mqtt_client_publish(client, topic, data, 0, 1, 0);
+    ESP_LOGI(PROJECT_NAME, "MQTT: published %s to %s with message ID %d.", data, topic, message_id);
 }
 
 void mqtt_publish_list(const char* topic, const char* keys[], const char* vals[], int nPairs)
