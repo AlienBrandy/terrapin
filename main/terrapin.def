@@ -12,16 +12,16 @@
  * these macro definitions will be expanded into an enumerated list in a public
  * header file, and also expanded to initialize an array of datastream objects.
  */ 
-// Key                                  Topic                             Units       Precision
+// Key                                  Units       Precision
 //
 #define DATASTREAM_LIST \
-X( DATASTREAM_CPU_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
-X( DATASTREAM_CH1_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
-X( DATASTREAM_CH2_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
-X( DATASTREAM_CH3_TEMPERATURE,          "v1/devices/me/telemetry",        "DegC",     2  )\
-X( DATASTREAM_RAM_UTILIZATION,          "v1/devices/me/telemetry",        "Bytes",    0  )\
-X( DATASTREAM_GPIO_38,                  "v1/devices/me/telemetry",        "",         0  )\
-X( DATASTREAM_RGB_LED,                  "v1/devices/me/telemetry",        "RGB",      0  )
+X( DATASTREAM_CPU_TEMPERATURE,          "DegC",     2         ) \
+X( DATASTREAM_CH1_TEMPERATURE,          "DegC",     2         ) \
+X( DATASTREAM_CH2_TEMPERATURE,          "DegC",     2         ) \
+X( DATASTREAM_CH3_TEMPERATURE,          "DegC",     2         ) \
+X( DATASTREAM_RAM_UTILIZATION,          "Bytes",    0         ) \
+X( DATASTREAM_GPIO_38,                  "",         0         ) \
+X( DATASTREAM_RGB_LED,                  "RGB",      0         ) 
 
 
 /**

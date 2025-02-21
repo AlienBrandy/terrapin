@@ -26,7 +26,7 @@ static bool mqtt_connected = false;
  */
 static datastream_t terrapin_datastreams[TERRAPIN_DATASTREAM_IDX_MAX] =
 {
-    #define X(KEY, TOPIC, UNITS, PRECISION) [KEY].name = #KEY, [KEY].topic = TOPIC, [KEY].units = UNITS, [KEY].precision = PRECISION,
+    #define X(KEY, UNITS, PRECISION) [KEY].name = #KEY, [KEY].units = UNITS, [KEY].precision = PRECISION,
     DATASTREAM_LIST
     #undef X
 };
@@ -66,6 +66,8 @@ static void gpio38_update_handler(void* handler_args, esp_event_base_t base, int
  */
 static void telemetry_update_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
 {
+    static const char* topic = "v1/devices/me/telemetry";
+    
     if (!mqtt_connected)
     {
         return;
@@ -76,7 +78,7 @@ static void telemetry_update_handler(void* handler_args, esp_event_base_t base, 
     {
         char data[20];
         snprintf(data, 20, "%.*f", ds.precision, ds.value);
-        mqtt_publish(ds.topic, ds.name, data);
+        mqtt_publish(topic, ds.name, data);
     }
 }
 

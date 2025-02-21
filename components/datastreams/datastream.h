@@ -42,7 +42,6 @@ typedef enum {
 typedef struct {
     double value;           // store all values as double; can cast to int or float as necessary.
     int64_t timestamp;      // time of last update, in milliseconds since epoch
-    const char* topic;      // topic associated with data
     const char* name;       // name associated with data
     const char* units;      // unit of measure
     int precision;          // data precision, ie number of digits after the decimal

@@ -15,7 +15,7 @@
  * @brief terrapin datastream identifiers
  */
 typedef enum {
-    #define X(NAME, TOPIC, UNITS, PRECISION) NAME,
+    #define X(NAME, UNITS, PRECISION) NAME,
     DATASTREAM_LIST
     #undef X
     TERRAPIN_DATASTREAM_IDX_MAX
