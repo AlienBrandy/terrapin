@@ -15,6 +15,7 @@
 #include "terrapin.h"
 #include <math.h>
 #include "min_max.h"
+#include "config.h"
 
 static temperature_sensor_handle_t temp_sensor = NULL;
 static adc_oneshot_unit_handle_t adc1_handle = NULL;
@@ -48,6 +49,9 @@ static float calc_temperature(uint32_t adc_raw)
 
 static void temp_sensor_task(void* args)
 {
+    long period_ms = config_get_integer("CONFIG_TEMPERATURE_UPDATE_PERIOD_MS");
+    period_ms = max(1000, period_ms);
+
     while (1)
     {
         float cpu_temp = 0;
@@ -72,7 +76,7 @@ static void temp_sensor_task(void* args)
             datastream_update(DATASTREAM_CH3_TEMPERATURE, adc_temp);
         }
 
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        vTaskDelay(period_ms / portTICK_PERIOD_MS);
     }
 }
 

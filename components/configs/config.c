@@ -199,6 +199,16 @@ bool config_get_boolean(const char* key)
     return (value[0] == '1') || (value[0] == 't') || (value[0] == 'T');
 }
 
+long config_get_integer(const char* key)
+{
+    const char* value;
+    if (!config_get_value(key, &value))
+    {
+        return 0;
+    }
+    return strtol(value, NULL, 0);
+}
+
 const char* config_get_key(int index)
 {
     if (index < _nConfigs)

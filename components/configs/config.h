@@ -65,6 +65,15 @@ bool config_get_value(const char* key, const char** value);
 bool config_get_boolean(const char* key);
 
 /**
+ * @brief retrieve an integer configuration setting.
+ * 
+ * @param key the setting to retrieve.
+ * @returns the value interpreted as an integer datatype.
+ * If the value is not a valid integer, the return value is 0.
+ */
+long config_get_integer(const char* key);
+
+/**
  * @brief retrieve the key of the config entry with the given index.
  * 
  * @param index the config index
